@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="size">60</integer>
+    <bool name="boo">true</bool>
+    <string-array name="strs">
+        <item>China</item>
+        <item>China2</item>
+        <item>China3</item>
+    </string-array>
+
+    <integer-array name="ints">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+</resources>
