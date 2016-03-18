@@ -81,11 +81,8 @@ public class AutoFoundWirer implements FieldWirer {
 
         if (type == Type.Auto) {
             type = autoDetermineType(field.getType());
-        }
-
-        if (type == null) return null;
-
-        if (isTypeOf(field.getType(), type.targetClass))
+            if (type == null) return null;
+        } else if (isTypeOf(field.getType(), type.targetClass))
             return new WireParam(type, found.id());
         return null;
     }
