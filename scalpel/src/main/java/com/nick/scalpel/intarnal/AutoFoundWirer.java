@@ -94,10 +94,11 @@ public class AutoFoundWirer implements FieldWirer {
         for (Type t : all) {
             if (isTypeOf(clz, t.targetClass)) {
                 matchCnt++;
+                if (matchCnt > 1) return null;
                 found = t;
             }
         }
-        return matchCnt == 1 ? found : null;
+        return found;
     }
 
     @Override
