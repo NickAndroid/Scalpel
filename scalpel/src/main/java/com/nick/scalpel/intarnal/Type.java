@@ -2,6 +2,7 @@ package com.nick.scalpel.intarnal;
 
 public enum Type {
 
+    Auto(null),
     View(android.view.View.class),
     Color(int.class),
     String(String.class),

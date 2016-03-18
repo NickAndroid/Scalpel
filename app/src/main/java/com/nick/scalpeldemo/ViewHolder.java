@@ -13,8 +13,8 @@ import com.nick.scalpel.intarnal.AutoFound;
 import com.nick.scalpel.intarnal.Type;
 
 public class ViewHolder {
-    @AutoFound(id = R.id.toolbar)
-    Toolbar toolbar;
+    @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
+            Toolbar toolbar;
     @AutoFound(id = R.id.fab)
     FloatingActionButton fab;
     @AutoFound(id = R.id.hello)
@@ -27,9 +27,9 @@ public class ViewHolder {
     String text;
     @AutoFound(id = R.bool.boo, type = Type.Bool)
     boolean bool;
-    @AutoFound(id = R.array.strs, type = Type.StringArray)
+    @AutoFound(id = R.array.strs)
     String[] strs;
-    @AutoFound(id = R.array.ints, type = Type.IntArray)
+    @AutoFound(id = R.array.ints, type = Type.Auto)
     int[] ints;
 
     ViewHolder(Context context) {

@@ -83,3 +83,24 @@ public class ViewHolder {
 }
 ```
 
+### Auto determine data type
+``` java
+  @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
+            Toolbar toolbar;
+    @AutoFound(id = R.id.fab)
+    FloatingActionButton fab;
+    @AutoFound(id = R.id.hello)
+    TextView hello;
+    @AutoFound(id = R.integer.size, type = Type.Integer)
+    int size;
+    @AutoFound(id = R.color.colorAccent, type = Type.Color)
+    int color;
+    @AutoFound(id = R.string.app_name, type = Type.String)
+    String text;
+    @AutoFound(id = R.bool.boo, type = Type.Bool)
+    boolean bool;
+    @AutoFound(id = R.array.strs)
+    String[] strs;
+    @AutoFound(id = R.array.ints, type = Type.Auto)
+    int[] ints;
+```
