@@ -85,7 +85,8 @@ public class ViewHolder {
 
 ### Auto determine data type
 ``` java
-  @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
+public class ViewHolder {
+    @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
             Toolbar toolbar;
     @AutoFound(id = R.id.fab)
     FloatingActionButton fab;
@@ -103,4 +104,20 @@ public class ViewHolder {
     String[] strs;
     @AutoFound(id = R.array.ints, type = Type.Auto)
     int[] ints;
+
+    ViewHolder(Context context) {
+        View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
+        Scalpel.getDefault().wire(rootV, this);
+        Scalpel.getDefault().wire(context, this);
+
+        log(toolbar, fab, hello, size, color, text, bool, strs, ints);
+    }
+
+    void log(Object... os) {
+        for (Object o : os) {
+            Log.d(getClass().getSimpleName(), o.toString());
+        }
+    }
+}
+
 ```
