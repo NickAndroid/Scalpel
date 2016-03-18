@@ -55,6 +55,8 @@ public class MainActivity extends ScalpelAutoActivity {
         hello.setTextSize(size);
         hello.setTextColor(color);
         hello.setText(text + "-" + bool + "-" + Arrays.toString(strs) + "-" + Arrays.toString(ints));
+
+        new ViewHolder(this);
     }
 
     @Override
