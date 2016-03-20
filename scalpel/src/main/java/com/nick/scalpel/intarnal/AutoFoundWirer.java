@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.intarnal.utils.ReflectionUtils;
@@ -36,6 +37,8 @@ public class AutoFoundWirer implements FieldWirer {
                 wire(activity.getApplicationContext(), activity, field);
                 break;
         }
+
+        Log.d("Scalpel", "AutoFoundWirer, Auto wired: " + field.getName());
     }
 
     private void wireFromRes(Resources resources, Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
@@ -82,6 +85,7 @@ public class AutoFoundWirer implements FieldWirer {
         if (type == Type.Auto) {
             type = autoDetermineType(field.getType());
             if (type == null) return null;
+            return new WireParam(type, found.id());
         } else if (isTypeOf(field.getType(), type.targetClass))
             return new WireParam(type, found.id());
         return null;
@@ -98,6 +102,7 @@ public class AutoFoundWirer implements FieldWirer {
                 found = t;
             }
         }
+
         return found;
     }
 
@@ -132,6 +137,14 @@ public class AutoFoundWirer implements FieldWirer {
         public WireParam(Type type, int idRes) {
             this.type = type;
             this.idRes = idRes;
+        }
+
+        @Override
+        public String toString() {
+            return "WireParam{" +
+                    "type=" + type +
+                    ", idRes=" + idRes +
+                    '}';
         }
     }
 }

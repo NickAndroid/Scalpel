@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.nick.scalpel.intarnal.AutoFoundWirer;
 import com.nick.scalpel.intarnal.FieldWirer;
+import com.nick.scalpel.intarnal.OnClickWirer;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -19,7 +20,9 @@ public class Scalpel {
 
     public Scalpel() {
         mWirers = new HashSet<>();
-        mWirers.add(new AutoFoundWirer());
+        AutoFoundWirer autoFoundWirer = new AutoFoundWirer();
+        mWirers.add(autoFoundWirer);
+        mWirers.add(new OnClickWirer(autoFoundWirer));
     }
 
     public static Scalpel getDefault() {

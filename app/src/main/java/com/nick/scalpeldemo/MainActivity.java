@@ -12,30 +12,49 @@ import android.widget.TextView;
 
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.intarnal.AutoFound;
+import com.nick.scalpel.intarnal.OnClick;
 import com.nick.scalpel.intarnal.Type;
 
 import java.util.Arrays;
 
 public class MainActivity extends ScalpelAutoActivity {
 
-    @AutoFound(id = R.id.toolbar)
+    @AutoFound(id = R.id.toolbar, type = Type.View)
     Toolbar toolbar;
+
+    @OnClick(listener = "mokeListener")
     @AutoFound(id = R.id.fab)
     FloatingActionButton fab;
+
     @AutoFound(id = R.id.hello)
+    @OnClick(listener = "mokeListener")
     TextView hello;
+
     @AutoFound(id = R.integer.size, type = Type.Integer)
     int size;
+
     @AutoFound(id = R.color.colorAccent, type = Type.Color)
     int color;
+
     @AutoFound(id = R.string.app_name, type = Type.String)
     String text;
+
     @AutoFound(id = R.bool.boo, type = Type.Bool)
     boolean bool;
+
     @AutoFound(id = R.array.strs, type = Type.StringArray)
     String[] strs;
+
     @AutoFound(id = R.array.ints, type = Type.IntArray)
     int[] ints;
+
+    private View.OnClickListener mokeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -43,14 +62,6 @@ public class MainActivity extends ScalpelAutoActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         hello.setTextSize(size);
         hello.setTextColor(color);

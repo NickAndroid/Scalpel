@@ -10,8 +10,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Objects;
 
 public abstract class ReflectionUtils {
+
+    public static Field findField(Object o, String name) {
+        for (Field f : o.getClass().getDeclaredFields()) {
+            if (f.getName().equals(name)) {
+                return f;
+            }
+        }
+        return null;
+    }
 
     public static boolean isBaseDataType(Class clazz) {
         return
