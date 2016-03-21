@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.intarnal;
+package com.nick.scalpel;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
+import com.nick.scalpel.intarnal.AutoFoundWirer;
+import com.nick.scalpel.intarnal.FieldWirer;
+import com.nick.scalpel.intarnal.OnClick;
 import com.nick.scalpel.intarnal.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -31,13 +35,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class OnClickWirer implements FieldWirer {
+public class OnTouchWirer implements FieldWirer {
 
     private AutoFoundWirer mAutoFoundWirer;
     private boolean debug;
     private String logTag;
 
-    public OnClickWirer(AutoFoundWirer wirer, Configuration configuration) {
+    public OnTouchWirer(AutoFoundWirer wirer, Configuration configuration) {
         this.mAutoFoundWirer = wirer;
         this.debug = configuration.isDebug();
         this.logTag = configuration.getLogTag();
@@ -45,7 +49,7 @@ public class OnClickWirer implements FieldWirer {
 
     @Override
     public Class<? extends Annotation> annotationClass() {
-        return OnClick.class;
+        return OnTouch.class;
     }
 
     @Override
@@ -95,31 +99,31 @@ public class OnClickWirer implements FieldWirer {
 
         View view = (View) fieldObjectWired;
 
-        OnClick onClick = field.getAnnotation(OnClick.class);
+        OnTouch onClick = field.getAnnotation(OnTouch.class);
         String listener = onClick.listener();
         String action = onClick.action();
 
         if (!TextUtils.isEmpty(listener)) {
-            Field onClickListenerField = ReflectionUtils.findField(o, listener);
-            if (onClickListenerField == null)
+            Field onTouchListenerField = ReflectionUtils.findField(o, listener);
+            if (onTouchListenerField == null)
                 throw new NullPointerException("No such listener:" + listener);
 
-            ReflectionUtils.makeAccessible(onClickListenerField);
+            ReflectionUtils.makeAccessible(onTouchListenerField);
 
-            Object onClickListenerObj = ReflectionUtils.getField(onClickListenerField, o);
-            if (onClickListenerObj == null)
+            Object onTouchListenerObj = ReflectionUtils.getField(onTouchListenerField, o);
+            if (onTouchListenerObj == null)
                 throw new NullPointerException("Null listener:" + listener);
 
-            boolean isListener = onClickListenerObj instanceof View.OnClickListener;
+            boolean isListener = onTouchListenerObj instanceof View.OnTouchListener;
 
             if (!isListener)
-                throw new IllegalArgumentException("Object " + onClickListenerObj + " is not instance of OnClickListener.");
+                throw new IllegalArgumentException("Object " + onTouchListenerObj + " is not instance of OnTouchListener.");
 
-            View.OnClickListener onClickListener = (View.OnClickListener) onClickListenerObj;
+            View.OnTouchListener onTouchListener = (View.OnTouchListener) onTouchListenerObj;
 
-            view.setOnClickListener(onClickListener);
+            view.setOnTouchListener(onTouchListener);
 
-            if (debug) Log.d(logTag, "OnClickWirer listener, Auto wired: " + field.getName());
+            if (debug) Log.d(logTag, "OnTouchWirer listener, Auto wired: " + field.getName());
         } else if (!TextUtils.isEmpty(action)) {
             final String[] args = onClick.args();
             Class[] argClz = new Class[args.length];
@@ -131,13 +135,15 @@ public class OnClickWirer implements FieldWirer {
                 throw new NullPointerException("No such method:" + action + " with args:" + Arrays.toString(argClz));
             ReflectionUtils.makeAccessible(actionMethod);
             final Method finalActionMethod = actionMethod;
-            view.setOnClickListener(new View.OnClickListener() {
+            view.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View v) {
-                    ReflectionUtils.invokeMethod(finalActionMethod, o, args);
+                public boolean onTouch(View v, MotionEvent event) {
+                    Object result = ReflectionUtils.invokeMethod(finalActionMethod, o, args);
+                    if (debug) Log.d(logTag, "OnTouchWirer onTouch invoked: " + result);
+                    return true;
                 }
             });
-            if (debug) Log.d(logTag, "OnClickWirer action, Auto wired: " + field.getName());
+            if (debug) Log.d(logTag, "OnTouchWirer action, Auto wired: " + field.getName());
         }
     }
 

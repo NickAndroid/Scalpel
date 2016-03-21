@@ -53,6 +53,7 @@ public class Scalpel {
         AutoFoundWirer autoFoundWirer = new AutoFoundWirer();
         mWirers.add(autoFoundWirer);
         mWirers.add(new OnClickWirer(autoFoundWirer, configuration == null ? Configuration.DEFAULT : configuration));
+        mWirers.add(new OnTouchWirer(autoFoundWirer, configuration == null ? Configuration.DEFAULT : configuration));
     }
 
     public void wire(Activity activity) {

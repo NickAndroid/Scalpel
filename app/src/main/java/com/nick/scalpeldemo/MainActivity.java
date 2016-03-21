@@ -14,9 +14,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.nick.scalpel.OnTouch;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.intarnal.AutoFound;
 import com.nick.scalpel.intarnal.OnClick;
@@ -30,7 +32,7 @@ public class MainActivity extends ScalpelAutoActivity {
     Toolbar toolbar;
 
     @AutoFound(id = R.id.fab)
-    @OnClick(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
+    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
     @AutoFound(id = R.id.hello)
@@ -81,6 +83,15 @@ public class MainActivity extends ScalpelAutoActivity {
         }
     };
 
+    private View.OnTouchListener mokeTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            return false;
+        }
+    };
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +112,7 @@ public class MainActivity extends ScalpelAutoActivity {
         Log.d("Scalpel.Demo", "am = " + am);
         Log.d("Scalpel.Demo", "alarmManager = " + alarmManager);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
+        // getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
     }
 
     public void showSnack(String content, String owner) {
