@@ -5,6 +5,8 @@ Auto wired framework for Android
 1. AutoFound views, int, String, bool, array...
 2. OnClick listener, action, args.
 
+ [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
+
 ### Usage
 1. Configurations customize:
 ``` java
