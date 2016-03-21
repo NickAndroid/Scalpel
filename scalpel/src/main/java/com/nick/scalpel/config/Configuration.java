@@ -16,6 +16,13 @@
 
 package com.nick.scalpel.config;
 
+import com.nick.scalpel.Scalpel;
+
+/**
+ * Config class for Scalpel, use a {@link com.nick.scalpel.config.Configuration.Builder}
+ * to build your configuration, and set to Scalpel before calling {@link Scalpel#getDefault()} by
+ * calling {@link Scalpel#config(Configuration)}.
+ */
 public class Configuration {
 
     boolean debug;
@@ -60,16 +67,35 @@ public class Configuration {
         boolean autoFindIfNull;
         String logTag = "Scalpel";
 
+        /**
+         * Toggle the debug mode.
+         *
+         * @param debug {@code true} if you want to enable debug mode.
+         * @return The builder instance.
+         */
         public Builder debug(boolean debug) {
             this.debug = debug;
             return this;
         }
 
+        /**
+         * When a field is null when wiring, and autoFindIfNull is set to true, Scalpel
+         * will try auto find the field.
+         *
+         * @param autoFindIfNull {@code true} if you want to enable auto find mode.
+         * @return The builder instance.
+         */
         public Builder autoFindIfNull(boolean autoFindIfNull) {
             this.autoFindIfNull = autoFindIfNull;
             return this;
         }
 
+        /**
+         * Set the log tag of Scalpel.
+         *
+         * @param tag Log tag when debug.
+         * @return The builder instance.
+         */
         public Builder logTag(String tag) {
             this.logTag = tag;
             return this;

@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.intarnal;
+package com.nick.scalpel;
 
-import android.app.Activity;
-import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-
-public interface FieldWirer {
-
-    Class<? extends Annotation> annotationClass();
-
-    void wire(Activity activity, Field field);
-
-    void wire(Fragment fragment, Field field);
-
-    void wire(Context context, Object object, Field field);
-
-    void wire(View root, Object object, Field field);
+/**
+ * Auto wired fragment using Scalpel.
+ *
+ * @see Scalpel
+ */
+public class ScalpelAutoFragment extends Fragment {
+    @Override
+    @CallSuper
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Scalpel.getDefault().wire(this);
+    }
 }

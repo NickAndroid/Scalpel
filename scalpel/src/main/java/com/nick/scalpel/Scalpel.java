@@ -18,6 +18,7 @@ package com.nick.scalpel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
@@ -29,6 +30,11 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Api class for Scalpel project.
+ * To get the instance of Scalpel you can use {@link #getDefault()}
+ * or create an instance manually.
+ */
 public class Scalpel {
 
     private static Scalpel ourInjection = new Scalpel();
@@ -55,6 +61,17 @@ public class Scalpel {
             for (FieldWirer wirer : mWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(activity, field);
+                }
+            }
+        }
+    }
+
+    public void wire(Fragment fragment) {
+        Class clz = fragment.getClass();
+        for (Field field : clz.getDeclaredFields()) {
+            for (FieldWirer wirer : mWirers) {
+                if (field.isAnnotationPresent(wirer.annotationClass())) {
+                    wirer.wire(fragment, field);
                 }
             }
         }

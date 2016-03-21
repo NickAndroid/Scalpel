@@ -16,16 +16,16 @@
 
 package com.nick.scalpel;
 
-import android.support.v7.app.AppCompatActivity;
+import android.preference.PreferenceActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Auto wired activity using Scalpel.
+ * Auto wired preference activity using Scalpel.
  *
  * @see Scalpel
  */
-public class ScalpelAutoActivity extends AppCompatActivity {
+public class ScalpelAutoPreferenceActivity extends PreferenceActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);

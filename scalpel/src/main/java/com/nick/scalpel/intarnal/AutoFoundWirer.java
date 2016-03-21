@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.nick.scalpel.intarnal.utils.ReflectionUtils;
@@ -37,7 +37,6 @@ public class AutoFoundWirer implements FieldWirer {
 
     @Override
     public void wire(Activity activity, Field field) {
-
         WireParam param = getParam(activity, field);
         if (param == null) return;
         switch (param.type) {
@@ -60,8 +59,25 @@ public class AutoFoundWirer implements FieldWirer {
                 wire(activity.getApplicationContext(), activity, field);
                 break;
         }
+    }
 
-        Log.d("Scalpel", "AutoFoundWirer, Auto wired: " + field.getName());
+    @Override
+    public void wire(Fragment fragment, Field field) {
+        WireParam param = getParam(fragment, field);
+        if (param == null) return;
+        switch (param.type) {
+            case View:
+                wire(fragment.getView(), fragment, field);
+                break;
+            case String:
+            case Color:
+            case Integer:
+            case Bool:
+            case StringArray:
+            case IntArray:
+                wire(fragment.getActivity(), fragment, field);
+                break;
+        }
     }
 
     private void wireFromContext(Context context, Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
