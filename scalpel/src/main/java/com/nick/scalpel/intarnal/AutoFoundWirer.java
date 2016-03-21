@@ -17,18 +17,24 @@
 package com.nick.scalpel.intarnal;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.intarnal.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public class AutoFoundWirer implements FieldWirer {
+public class AutoFoundWirer extends AbsFieldWirer {
+
+    public AutoFoundWirer(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     public Class<? extends Annotation> annotationClass() {
@@ -85,6 +91,11 @@ public class AutoFoundWirer implements FieldWirer {
                 wire(fragment.getActivity(), fragment, field);
                 break;
         }
+    }
+
+    @Override
+    public void wire(Service service, Field field) {
+        wire(service.getApplicationContext(), service, field);
     }
 
     private void wireFromContext(Context context, Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {

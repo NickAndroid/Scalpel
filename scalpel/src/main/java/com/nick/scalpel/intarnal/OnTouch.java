@@ -26,6 +26,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD})
 @Retention(RUNTIME)
 @Documented
-public @interface BindService {
+public @interface OnTouch {
+    String listener() default "";
 
+    String action() default "";
+
+    String[] args() default {};
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016 Nick Guo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nick.scalpeldemo;
 
 import android.accounts.AccountManager;
@@ -5,7 +21,10 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,15 +37,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.nick.scalpel.OnTouch;
+import com.nick.scalpel.intarnal.OnTouch;
 import com.nick.scalpel.ScalpelAutoActivity;
+import com.nick.scalpel.intarnal.AutoBind;
 import com.nick.scalpel.intarnal.AutoFound;
 import com.nick.scalpel.intarnal.OnClick;
 import com.nick.scalpel.intarnal.Type;
 
 import java.util.Arrays;
 
-public class MainActivity extends ScalpelAutoActivity {
+public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
     @AutoFound(id = R.id.toolbar, type = Type.View)
     Toolbar toolbar;
@@ -75,6 +95,9 @@ public class MainActivity extends ScalpelAutoActivity {
     @AutoFound
     AlarmManager alarmManager;
 
+    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this")
+    IMyAidlInterface mService;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -89,6 +112,18 @@ public class MainActivity extends ScalpelAutoActivity {
             Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return false;
+        }
+    };
+
+    private AutoBind.Callback mCallback = new AutoBind.Callback() {
+        @Override
+        public void onServiceBound(ComponentName name, ServiceConnection connection) {
+            Log.d("Scalpel.Demo", "onServiceBound, service = " + mService);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d("Scalpel.Demo", "onServiceDisconnected, service = " + mService);
         }
     };
 
@@ -113,6 +148,14 @@ public class MainActivity extends ScalpelAutoActivity {
         Log.d("Scalpel.Demo", "alarmManager = " + alarmManager);
 
         // getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
+
+        Log.d("Scalpel.Demo", "service = " + mService);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("Scalpel.Demo", "service = " + mService);
+            }
+        }, 3000);
     }
 
     public void showSnack(String content, String owner) {
@@ -140,5 +183,15 @@ public class MainActivity extends ScalpelAutoActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onServiceBound(ComponentName name, ServiceConnection connection) {
+        mCallback.onServiceBound(name, connection);
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        mCallback.onServiceDisconnected(name);
     }
 }

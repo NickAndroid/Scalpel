@@ -17,14 +17,17 @@
 package com.nick.scalpel;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
+import com.nick.scalpel.intarnal.AutoBindWirer;
 import com.nick.scalpel.intarnal.AutoFoundWirer;
 import com.nick.scalpel.intarnal.FieldWirer;
 import com.nick.scalpel.intarnal.OnClickWirer;
+import com.nick.scalpel.intarnal.OnTouchWirer;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -50,10 +53,12 @@ public class Scalpel {
     }
 
     public void config(Configuration configuration) {
-        AutoFoundWirer autoFoundWirer = new AutoFoundWirer();
+        Configuration usingConfig = configuration == null ? Configuration.DEFAULT : configuration;
+        AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
         mWirers.add(autoFoundWirer);
-        mWirers.add(new OnClickWirer(autoFoundWirer, configuration == null ? Configuration.DEFAULT : configuration));
-        mWirers.add(new OnTouchWirer(autoFoundWirer, configuration == null ? Configuration.DEFAULT : configuration));
+        mWirers.add(new OnClickWirer(autoFoundWirer, usingConfig));
+        mWirers.add(new OnTouchWirer(autoFoundWirer, usingConfig));
+        mWirers.add(new AutoBindWirer(usingConfig));
     }
 
     public void wire(Activity activity) {
@@ -62,6 +67,17 @@ public class Scalpel {
             for (FieldWirer wirer : mWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(activity, field);
+                }
+            }
+        }
+    }
+
+    public void wire(Service service) {
+        Class clz = service.getClass();
+        for (Field field : clz.getDeclaredFields()) {
+            for (FieldWirer wirer : mWirers) {
+                if (field.isAnnotationPresent(wirer.annotationClass())) {
+                    wirer.wire(service, field);
                 }
             }
         }

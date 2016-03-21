@@ -16,20 +16,15 @@
 
 package com.nick.scalpel;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import android.app.Service;
+import android.support.annotation.CallSuper;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+public abstract class ScalpelAutoService extends Service {
 
-@Target({FIELD})
-@Retention(RUNTIME)
-@Documented
-public @interface OnTouch {
-    String listener() default "";
-
-    String action() default "";
-
-    String[] args() default {};
+    @Override
+    @CallSuper
+    public void onCreate() {
+        super.onCreate();
+        Scalpel.getDefault().wire(this);
+    }
 }

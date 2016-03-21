@@ -16,6 +16,14 @@
 
 package com.nick.scalpel.intarnal;
 
-public interface ViewFieldWirer extends FieldWirer {
+import com.nick.scalpel.config.Configuration;
 
+public abstract class AbsFieldWirer implements FieldWirer {
+    protected boolean debug;
+    protected String logTag;
+
+    public AbsFieldWirer(Configuration configuration) {
+        this.debug = configuration.isDebug();
+        this.logTag = configuration.getLogTag();
+    }
 }

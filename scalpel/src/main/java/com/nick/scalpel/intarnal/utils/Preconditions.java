@@ -70,6 +70,12 @@ public class Preconditions {
         }
     }
 
+    public static void checkState(final boolean expression, String message) {
+        if (!expression) {
+            throw new IllegalStateException(message);
+        }
+    }
+
     public static void checkCallingInMainThread(boolean expected) {
         boolean isInMainThread = Looper.getMainLooper().getThread().getId()
                 == Thread.currentThread().getId();

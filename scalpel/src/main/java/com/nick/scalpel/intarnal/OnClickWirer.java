@@ -17,6 +17,7 @@
 package com.nick.scalpel.intarnal;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -31,16 +32,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class OnClickWirer implements FieldWirer {
+public class OnClickWirer extends AbsFieldWirer {
 
     private AutoFoundWirer mAutoFoundWirer;
-    private boolean debug;
-    private String logTag;
 
     public OnClickWirer(AutoFoundWirer wirer, Configuration configuration) {
+        super(configuration);
         this.mAutoFoundWirer = wirer;
-        this.debug = configuration.isDebug();
-        this.logTag = configuration.getLogTag();
     }
 
     @Override
@@ -68,6 +66,17 @@ public class OnClickWirer implements FieldWirer {
             mAutoFoundWirer.wire(fragment, field);
         }
         autoWire(fragment, field);
+    }
+
+    @Override
+    public void wire(Service service, Field field) {
+        ReflectionUtils.makeAccessible(field);
+
+        Object fieldObject = ReflectionUtils.getField(field, service);
+        if (fieldObject == null) {
+            mAutoFoundWirer.wire(service, field);
+        }
+        autoWire(service, field);
     }
 
     @Override

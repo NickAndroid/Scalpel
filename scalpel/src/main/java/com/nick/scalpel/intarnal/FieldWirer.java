@@ -17,6 +17,7 @@
 package com.nick.scalpel.intarnal;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -31,6 +32,8 @@ public interface FieldWirer {
     void wire(Activity activity, Field field);
 
     void wire(Fragment fragment, Field field);
+
+    void wire(Service service, Field field);
 
     void wire(Context context, Object object, Field field);
 
