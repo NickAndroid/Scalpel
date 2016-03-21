@@ -81,14 +81,7 @@ public class ViewHolder {
         Scalpel.getDefault().wire(rootV, this);
         Scalpel.getDefault().wire(context, this);
 
-        log(toolbar, fab, hello, size, color, text, bool, strs, ints);
-
-        Log.d("Scalpel.Demo", "pm = " + pm);
-        Log.d("Scalpel.Demo", "tm = " + tm);
-        Log.d("Scalpel.Demo", "nm = " + nm);
-        Log.d("Scalpel.Demo", "accountManager = " + accountManager);
-        Log.d("Scalpel.Demo", "am = " + am);
-        Log.d("Scalpel.Demo", "alarmManager = " + alarmManager);
+        log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
     }
 
     void log(Object... os) {

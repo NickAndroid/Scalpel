@@ -75,6 +75,13 @@ public class AutoFoundWirer implements FieldWirer {
             case Bool:
             case StringArray:
             case IntArray:
+            case PM:
+            case Account:
+            case Alarm:
+            case AM:
+            case WM:
+            case NM:
+            case TM:
                 wire(fragment.getActivity(), fragment, field);
                 break;
         }

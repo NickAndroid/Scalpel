@@ -100,6 +100,8 @@ public class MainActivity extends ScalpelAutoActivity {
         Log.d("Scalpel.Demo", "accountManager = " + accountManager);
         Log.d("Scalpel.Demo", "am = " + am);
         Log.d("Scalpel.Demo", "alarmManager = " + alarmManager);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
     }
 
     public void showSnack(String content, String owner) {
