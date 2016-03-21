@@ -15,12 +15,12 @@ public class MyApplication extends Application {
         Scalpel.getDefault().config(Configuration.builder().autoFindIfNull(true).debug(true).logTag("Scalpel").build());
     }
 }
-``` java
+```
 
 2. Use auto activity or wire things manually
 ``` java
 public class MainActivity extends ScalpelAutoActivity {}
-``` java
+```
 
 ``` java
 public class ViewHolder {
@@ -39,7 +39,7 @@ public class ViewHolder {
         log(toolbar, fab, hello, size, color, text, bool, strs, ints);
     }
 }
-``` java
+```
 
 ### Example
 ``` java
@@ -101,4 +101,4 @@ public class MainActivity extends ScalpelAutoActivity {
                 .setAction("Action", null).show();
     }
 }
-``` java
+```
