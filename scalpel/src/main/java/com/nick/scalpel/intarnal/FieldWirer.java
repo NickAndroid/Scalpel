@@ -11,6 +11,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public interface FieldWirer {
+
     Class<? extends Annotation> annotationClass();
 
     void wire(Activity activity, Field field);

@@ -6,17 +6,24 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.intarnal.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class OnClickWirer implements FieldWirer {
 
     private AutoFoundWirer mAutoFoundWirer;
+    private boolean debug;
+    private String logTag;
 
-    public OnClickWirer(AutoFoundWirer wirer) {
+    public OnClickWirer(AutoFoundWirer wirer, Configuration configuration) {
         this.mAutoFoundWirer = wirer;
+        this.debug = configuration.isDebug();
+        this.logTag = configuration.getLogTag();
     }
 
     @Override
@@ -46,7 +53,10 @@ public class OnClickWirer implements FieldWirer {
         autoWire(object, field);
     }
 
-    private void autoWire(Object o, Field field) {
+    private void autoWire(final Object o, Field field) {
+
+        if (debug) Log.d(logTag, "Auto wiring: " + field.getName());
+
         Object fieldObjectWired = ReflectionUtils.getField(field, o);
         if (fieldObjectWired == null) return;
 
@@ -59,27 +69,48 @@ public class OnClickWirer implements FieldWirer {
 
         OnClick onClick = field.getAnnotation(OnClick.class);
         String listener = onClick.listener();
-        if (TextUtils.isEmpty(listener)) return;
+        String action = onClick.action();
 
-        Field onClickListenerField = ReflectionUtils.findField(o, listener);
-        if (onClickListenerField == null)
-            throw new NullPointerException("No such listener:" + listener);
+        if (!TextUtils.isEmpty(listener)) {
+            Field onClickListenerField = ReflectionUtils.findField(o, listener);
+            if (onClickListenerField == null)
+                throw new NullPointerException("No such listener:" + listener);
 
-        ReflectionUtils.makeAccessible(onClickListenerField);
+            ReflectionUtils.makeAccessible(onClickListenerField);
 
-        Object onClickListenerObj = ReflectionUtils.getField(onClickListenerField, o);
-        if (onClickListenerObj == null) throw new NullPointerException("Null listener:" + listener);
+            Object onClickListenerObj = ReflectionUtils.getField(onClickListenerField, o);
+            if (onClickListenerObj == null)
+                throw new NullPointerException("Null listener:" + listener);
 
-        boolean isListener = onClickListenerObj instanceof View.OnClickListener;
+            boolean isListener = onClickListenerObj instanceof View.OnClickListener;
 
-        if (!isListener)
-            throw new IllegalArgumentException("Object " + onClickListenerObj + " is not instance of OnClickListener.");
+            if (!isListener)
+                throw new IllegalArgumentException("Object " + onClickListenerObj + " is not instance of OnClickListener.");
 
-        View.OnClickListener onClickListener = (View.OnClickListener) onClickListenerObj;
+            View.OnClickListener onClickListener = (View.OnClickListener) onClickListenerObj;
 
-        view.setOnClickListener(onClickListener);
+            view.setOnClickListener(onClickListener);
 
-        Log.d("Scalpel", "OnClickWirer, Auto wired: " + field.getName());
+            if (debug) Log.d(logTag, "OnClickWirer listener, Auto wired: " + field.getName());
+        } else if (!TextUtils.isEmpty(action)) {
+            final String[] args = onClick.args();
+            Class[] argClz = new Class[args.length];
+            for (int i = 0; i < args.length; i++) {
+                argClz[i] = String.class;
+            }
+            Method actionMethod = ReflectionUtils.findMethod(o.getClass(), action, argClz);
+            if (actionMethod == null)
+                throw new NullPointerException("No such method:" + action + " with args:" + Arrays.toString(argClz));
+            ReflectionUtils.makeAccessible(actionMethod);
+            final Method finalActionMethod = actionMethod;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ReflectionUtils.invokeMethod(finalActionMethod, o, args);
+                }
+            });
+            if (debug) Log.d(logTag, "OnClickWirer action, Auto wired: " + field.getName());
+        }
     }
 
     @Override

@@ -22,8 +22,8 @@ public class MainActivity extends ScalpelAutoActivity {
     @AutoFound(id = R.id.toolbar, type = Type.View)
     Toolbar toolbar;
 
-    @OnClick(listener = "mokeListener")
     @AutoFound(id = R.id.fab)
+    @OnClick(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
     @AutoFound(id = R.id.hello)
@@ -68,6 +68,11 @@ public class MainActivity extends ScalpelAutoActivity {
         hello.setText(text + "-" + bool + "-" + Arrays.toString(strs) + "-" + Arrays.toString(ints));
 
         new ViewHolder(this);
+    }
+
+    public void showSnack(String content, String owner) {
+        Snackbar.make(getWindow().getDecorView(), owner + ": " + content, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @Override

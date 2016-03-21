@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
+import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.intarnal.AutoFoundWirer;
 import com.nick.scalpel.intarnal.FieldWirer;
 import com.nick.scalpel.intarnal.OnClickWirer;
@@ -20,13 +21,16 @@ public class Scalpel {
 
     public Scalpel() {
         mWirers = new HashSet<>();
-        AutoFoundWirer autoFoundWirer = new AutoFoundWirer();
-        mWirers.add(autoFoundWirer);
-        mWirers.add(new OnClickWirer(autoFoundWirer));
     }
 
     public static Scalpel getDefault() {
         return ourInjection;
+    }
+
+    public void config(Configuration configuration) {
+        AutoFoundWirer autoFoundWirer = new AutoFoundWirer();
+        mWirers.add(autoFoundWirer);
+        mWirers.add(new OnClickWirer(autoFoundWirer, configuration == null ? Configuration.DEFAULT : configuration));
     }
 
     public void wire(Activity activity) {
@@ -35,7 +39,6 @@ public class Scalpel {
             for (FieldWirer wirer : mWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(activity, field);
-                    break;
                 }
             }
         }
