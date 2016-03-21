@@ -18,6 +18,7 @@ package com.nick.scalpel.intarnal;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,17 @@ public class OnClickWirer implements FieldWirer {
             mAutoFoundWirer.wire(activity, field);
         }
         autoWire(activity, field);
+    }
+
+    @Override
+    public void wire(Fragment fragment, Field field) {
+        ReflectionUtils.makeAccessible(field);
+
+        Object fieldObject = ReflectionUtils.getField(field, fragment);
+        if (fieldObject == null) {
+            mAutoFoundWirer.wire(fragment, field);
+        }
+        autoWire(fragment, field);
     }
 
     @Override
