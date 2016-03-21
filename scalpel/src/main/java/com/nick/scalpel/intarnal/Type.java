@@ -16,9 +16,28 @@
 
 package com.nick.scalpel.intarnal;
 
+import android.accounts.AccountManager;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.os.PowerManager;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
+import android.view.LayoutInflater;
+import android.view.WindowManager;
+
 public enum Type {
 
     Auto(null),
+    PM(PowerManager.class),
+    WM(WindowManager.class),
+    Inflater(LayoutInflater.class),
+    Account(AccountManager.class),
+    AM(ActivityManager.class),
+    Alarm(AlarmManager.class),
+    NM(NotificationManager.class),
+    TM(TelephonyManager.class),
+    TCM(TelecomManager.class),
     View(android.view.View.class),
     Color(int.class),
     String(String.class),

@@ -1,9 +1,15 @@
 package com.nick.scalpeldemo;
 
+import android.accounts.AccountManager;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.PowerManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +50,24 @@ public class ViewHolder {
     @AutoFound(id = R.array.ints, type = Type.Auto)
     int[] ints;
 
+    @AutoFound
+    PowerManager pm;
+
+    @AutoFound
+    TelephonyManager tm;
+
+    @AutoFound
+    NotificationManager nm;
+
+    @AutoFound
+    AccountManager accountManager;
+
+    @AutoFound
+    ActivityManager am;
+
+    @AutoFound
+    AlarmManager alarmManager;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -58,6 +82,13 @@ public class ViewHolder {
         Scalpel.getDefault().wire(context, this);
 
         log(toolbar, fab, hello, size, color, text, bool, strs, ints);
+
+        Log.d("Scalpel.Demo", "pm = " + pm);
+        Log.d("Scalpel.Demo", "tm = " + tm);
+        Log.d("Scalpel.Demo", "nm = " + nm);
+        Log.d("Scalpel.Demo", "accountManager = " + accountManager);
+        Log.d("Scalpel.Demo", "am = " + am);
+        Log.d("Scalpel.Demo", "alarmManager = " + alarmManager);
     }
 
     void log(Object... os) {

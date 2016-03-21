@@ -50,6 +50,13 @@ public class AutoFoundWirer implements FieldWirer {
             case Bool:
             case StringArray:
             case IntArray:
+            case PM:
+            case Account:
+            case Alarm:
+            case AM:
+            case WM:
+            case NM:
+            case TM:
                 wire(activity.getApplicationContext(), activity, field);
                 break;
         }
@@ -57,7 +64,8 @@ public class AutoFoundWirer implements FieldWirer {
         Log.d("Scalpel", "AutoFoundWirer, Auto wired: " + field.getName());
     }
 
-    private void wireFromRes(Resources resources, Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
+    private void wireFromContext(Context context, Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
+        Resources resources = context.getResources();
         switch (type) {
             case String:
                 ReflectionUtils.setField(field, forWho, resources.getString(idRes));
@@ -80,6 +88,32 @@ public class AutoFoundWirer implements FieldWirer {
                 break;
             case IntArray:
                 ReflectionUtils.setField(field, forWho, resources.getIntArray(idRes));
+                break;
+            case PM:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.POWER_SERVICE));
+                break;
+            case Account:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.ACCOUNT_SERVICE));
+                break;
+            case Alarm:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.ALARM_SERVICE));
+                break;
+            case AM:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.ACTIVITY_SERVICE));
+                break;
+            case WM:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.WINDOW_SERVICE));
+                break;
+            case NM:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.NOTIFICATION_SERVICE));
+                break;
+            case TM:
+                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.TELEPHONY_SERVICE));
+                break;
+            case TCM:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ReflectionUtils.setField(field, forWho, context.getSystemService(Context.TELECOM_SERVICE));
+                }
                 break;
         }
     }
@@ -118,7 +152,6 @@ public class AutoFoundWirer implements FieldWirer {
                 found = t;
             }
         }
-
         return found;
     }
 
@@ -126,7 +159,7 @@ public class AutoFoundWirer implements FieldWirer {
     public void wire(Context context, Object object, Field field) {
         WireParam param = getParam(object, field);
         if (param == null) return;
-        wireFromRes(context.getResources(), param.type, param.idRes, null, field, object);
+        wireFromContext(context, param.type, param.idRes, null, field, object);
     }
 
     @Override
