@@ -1,28 +1,86 @@
 # Scalpel
 Auto wired framework for Android
 
-### Auto activity
+### Features
+1. AutoFound views, int, String, bool, array...
+2. OnClick listener, action, args.
+
+### Usage
+1. Configurations customize:
+``` java
+public class MyApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Scalpel.getDefault().config(Configuration.builder().autoFindIfNull(true).debug(true).logTag("Scalpel").build());
+    }
+}
+``` java
+
+2. Use auto activity or wire things manually
+``` java
+public class MainActivity extends ScalpelAutoActivity {}
+``` java
+
+``` java
+public class ViewHolder {
+    @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
+            Toolbar toolbar;
+
+    @AutoFound(id = R.id.fab)
+    @OnClick(listener = "mokeListener")
+    FloatingActionButton fab;
+
+    ViewHolder(Context context) {
+        View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
+        Scalpel.getDefault().wire(rootV, this);
+        Scalpel.getDefault().wire(context, this);
+
+        log(toolbar, fab, hello, size, color, text, bool, strs, ints);
+    }
+}
+``` java
+
+### Example
 ``` java
 public class MainActivity extends ScalpelAutoActivity {
 
-    @AutoFound(id = R.id.toolbar)
+    @AutoFound(id = R.id.toolbar, type = Type.View)
     Toolbar toolbar;
+
     @AutoFound(id = R.id.fab)
+    @OnClick(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
+
     @AutoFound(id = R.id.hello)
+    @OnClick(listener = "mokeListener")
     TextView hello;
+
     @AutoFound(id = R.integer.size, type = Type.Integer)
     int size;
+
     @AutoFound(id = R.color.colorAccent, type = Type.Color)
     int color;
+
     @AutoFound(id = R.string.app_name, type = Type.String)
     String text;
+
     @AutoFound(id = R.bool.boo, type = Type.Bool)
     boolean bool;
+
     @AutoFound(id = R.array.strs, type = Type.StringArray)
     String[] strs;
+
     @AutoFound(id = R.array.ints, type = Type.IntArray)
     int[] ints;
+
+    private View.OnClickListener mokeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -31,93 +89,16 @@ public class MainActivity extends ScalpelAutoActivity {
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         hello.setTextSize(size);
         hello.setTextColor(color);
         hello.setText(text + "-" + bool + "-" + Arrays.toString(strs) + "-" + Arrays.toString(ints));
-    }
-```
 
-### Manual wire
-``` java
-public class ViewHolder {
-    @AutoFound(id = R.id.toolbar)
-    Toolbar toolbar;
-    @AutoFound(id = R.id.fab)
-    FloatingActionButton fab;
-    @AutoFound(id = R.id.hello)
-    TextView hello;
-    @AutoFound(id = R.integer.size, type = Type.Integer)
-    int size;
-    @AutoFound(id = R.color.colorAccent, type = Type.Color)
-    int color;
-    @AutoFound(id = R.string.app_name, type = Type.String)
-    String text;
-    @AutoFound(id = R.bool.boo, type = Type.Bool)
-    boolean bool;
-    @AutoFound(id = R.array.strs, type = Type.StringArray)
-    String[] strs;
-    @AutoFound(id = R.array.ints, type = Type.IntArray)
-    int[] ints;
-
-    ViewHolder(Context context) {
-        View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
-        Scalpel.getDefault().wire(rootV, this);
-        Scalpel.getDefault().wire(context, this);
-
-        log(toolbar, fab, hello, size, color, text, bool, strs, ints);
+        new ViewHolder(this);
     }
 
-    void log(Object... os) {
-        for (Object o : os) {
-            Log.d(getClass().getSimpleName(), o.toString());
-        }
+    public void showSnack(String content, String owner) {
+        Snackbar.make(getWindow().getDecorView(), owner + ": " + content, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 }
-```
-
-### Auto determine data type
-``` java
-public class ViewHolder {
-    @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
-            Toolbar toolbar;
-    @AutoFound(id = R.id.fab)
-    FloatingActionButton fab;
-    @AutoFound(id = R.id.hello)
-    TextView hello;
-    @AutoFound(id = R.integer.size, type = Type.Integer)
-    int size;
-    @AutoFound(id = R.color.colorAccent, type = Type.Color)
-    int color;
-    @AutoFound(id = R.string.app_name, type = Type.String)
-    String text;
-    @AutoFound(id = R.bool.boo, type = Type.Bool)
-    boolean bool;
-    @AutoFound(id = R.array.strs)
-    String[] strs;
-    @AutoFound(id = R.array.ints, type = Type.Auto)
-    int[] ints;
-
-    ViewHolder(Context context) {
-        View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
-        Scalpel.getDefault().wire(rootV, this);
-        Scalpel.getDefault().wire(context, this);
-
-        log(toolbar, fab, hello, size, color, text, bool, strs, ints);
-    }
-
-    void log(Object... os) {
-        for (Object o : os) {
-            Log.d(getClass().getSimpleName(), o.toString());
-        }
-    }
-}
-
 ```
