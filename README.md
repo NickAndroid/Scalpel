@@ -1,11 +1,12 @@
 # Scalpel
 Auto wired framework for Android
 
+### Latest version
+[ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
+
 ### Features
 1. AutoFound views, int, String, bool, array...
 2. OnClick listener, action, args.
-
- [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
 
 ### Usage
 1. Configurations customize:
@@ -22,6 +23,10 @@ public class MyApplication extends Application {
 2. Use auto activity or wire things manually
 ``` java
 public class MainActivity extends ScalpelAutoActivity {}
+
+public class MyFragment extends ScalpelAutoFragment {}
+
+public class MyService extends ScalpelAutoService {}
 ```
 
 ``` java
@@ -32,6 +37,12 @@ public class ViewHolder {
     @AutoFound(id = R.id.fab)
     @OnClick(listener = "mokeListener")
     FloatingActionButton fab;
+
+    @AutoFound
+    TelephonyManager tm;
+
+    @AutoFound
+    NotificationManager nm;
 
     ViewHolder(Context context) {
         View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
@@ -75,6 +86,12 @@ public class MainActivity extends ScalpelAutoActivity {
 
     @AutoFound(id = R.array.ints, type = Type.IntArray)
     int[] ints;
+
+    @AutoFound
+    AlarmManager alarmManager;
+
+    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this")
+    IMyAidlInterface mService;
 
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
