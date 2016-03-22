@@ -21,6 +21,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -62,6 +63,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
             case WM:
             case NM:
             case TM:
+            case SP:
                 wire(activity.getApplicationContext(), activity, field);
                 break;
         }
@@ -88,6 +90,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
             case WM:
             case NM:
             case TM:
+            case SP:
                 wire(fragment.getActivity(), fragment, field);
                 break;
         }
@@ -98,7 +101,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
         wire(service.getApplicationContext(), service, field);
     }
 
-    private void wireFromContext(Context context, Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
+    private void wireFromContext(Context context, AutoFoundType type, int idRes, Resources.Theme theme, Field field, Object forWho) {
         Resources resources = context.getResources();
         switch (type) {
             case String:
@@ -149,6 +152,9 @@ public class AutoFoundWirer extends AbsFieldWirer {
                     ReflectionUtils.setField(field, forWho, context.getSystemService(Context.TELECOM_SERVICE));
                 }
                 break;
+            case SP:
+                ReflectionUtils.setField(field, forWho, PreferenceManager.getDefaultSharedPreferences(context));
+                break;
         }
     }
 
@@ -164,9 +170,9 @@ public class AutoFoundWirer extends AbsFieldWirer {
         if (fieldObject != null && !isBaseType) return null;
 
         AutoFound found = field.getAnnotation(AutoFound.class);
-        Type type = found.type();
+        AutoFoundType type = found.type();
 
-        if (type == Type.Auto) {
+        if (type == AutoFoundType.Auto) {
             type = autoDetermineType(field.getType());
             if (type == null) return null;
             return new WireParam(type, found.id());
@@ -175,11 +181,11 @@ public class AutoFoundWirer extends AbsFieldWirer {
         return null;
     }
 
-    private Type autoDetermineType(Class clz) {
-        Type[] all = Type.values();
+    private AutoFoundType autoDetermineType(Class clz) {
+        AutoFoundType[] all = AutoFoundType.values();
         int matchCnt = 0;
-        Type found = null;
-        for (Type t : all) {
+        AutoFoundType found = null;
+        for (AutoFoundType t : all) {
             if (isTypeOf(clz, t.targetClass)) {
                 matchCnt++;
                 if (matchCnt > 1) return null;
@@ -204,6 +210,8 @@ public class AutoFoundWirer extends AbsFieldWirer {
             case View:
                 ReflectionUtils.setField(field, object, root.findViewById(param.idRes));
                 break;
+            default:
+                wire(root.getContext(), object, field);
         }
     }
 
@@ -214,10 +222,10 @@ public class AutoFoundWirer extends AbsFieldWirer {
     }
 
     class WireParam {
-        Type type;
+        AutoFoundType type;
         int idRes;
 
-        public WireParam(Type type, int idRes) {
+        public WireParam(AutoFoundType type, int idRes) {
             this.type = type;
             this.idRes = idRes;
         }

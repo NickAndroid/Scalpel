@@ -42,13 +42,13 @@ import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
 import com.nick.scalpel.core.AutoFound;
 import com.nick.scalpel.core.OnClick;
-import com.nick.scalpel.core.Type;
+import com.nick.scalpel.core.AutoFoundType;
 
 import java.util.Arrays;
 
 public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
-    @AutoFound(id = R.id.toolbar, type = Type.View)
+    @AutoFound(id = R.id.toolbar, type = AutoFoundType.View)
     Toolbar toolbar;
 
     @AutoFound(id = R.id.fab)
@@ -59,22 +59,22 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @OnClick(listener = "mokeListener")
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = Type.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFoundType.Integer)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = Type.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFoundType.Color)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = Type.String)
+    @AutoFound(id = R.string.app_name, type = AutoFoundType.String)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = Type.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFoundType.Bool)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = Type.StringArray)
+    @AutoFound(id = R.array.strs, type = AutoFoundType.StringArray)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = Type.IntArray)
+    @AutoFound(id = R.array.ints, type = AutoFoundType.IntArray)
     int[] ints;
 
     @AutoFound
@@ -101,7 +101,7 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "Replace with your own actions", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
     };
@@ -109,7 +109,7 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     private View.OnTouchListener mokeTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "Replace with your own actions", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return false;
         }
@@ -165,14 +165,14 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the actions bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle actions bar item clicks here. The actions bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();

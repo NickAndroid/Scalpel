@@ -25,6 +25,7 @@ import android.view.View;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AutoBindWirer;
 import com.nick.scalpel.core.AutoFoundWirer;
+import com.nick.scalpel.core.AutoRegisterWirer;
 import com.nick.scalpel.core.FieldWirer;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
@@ -59,6 +60,7 @@ public class Scalpel {
         mWirers.add(new OnClickWirer(autoFoundWirer, usingConfig));
         mWirers.add(new OnTouchWirer(autoFoundWirer, usingConfig));
         mWirers.add(new AutoBindWirer(usingConfig));
+        mWirers.add(new AutoRegisterWirer(usingConfig));
     }
 
     public void wire(Activity activity) {

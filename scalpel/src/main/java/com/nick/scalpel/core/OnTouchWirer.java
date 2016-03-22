@@ -149,7 +149,7 @@ public class OnTouchWirer extends AbsFieldWirer {
                     return true;
                 }
             });
-            if (debug) Log.d(logTag, "OnTouchWirer action, Auto wired: " + field.getName());
+            if (debug) Log.d(logTag, "OnTouchWirer actions, Auto wired: " + field.getName());
         }
     }
 

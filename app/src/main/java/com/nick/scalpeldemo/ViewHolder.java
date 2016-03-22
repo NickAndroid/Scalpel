@@ -34,7 +34,7 @@ import android.widget.TextView;
 import com.nick.scalpel.Scalpel;
 import com.nick.scalpel.core.AutoFound;
 import com.nick.scalpel.core.OnClick;
-import com.nick.scalpel.core.Type;
+import com.nick.scalpel.core.AutoFoundType;
 
 public class ViewHolder {
     @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
@@ -48,22 +48,22 @@ public class ViewHolder {
     @AutoFound(id = R.id.hello)
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = Type.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFoundType.Integer)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = Type.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFoundType.Color)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = Type.String)
+    @AutoFound(id = R.string.app_name, type = AutoFoundType.String)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = Type.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFoundType.Bool)
     boolean bool;
 
     @AutoFound(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = Type.Auto)
+    @AutoFound(id = R.array.ints, type = AutoFoundType.Auto)
     int[] ints;
 
     @AutoFound
@@ -87,7 +87,7 @@ public class ViewHolder {
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "Replace with your own actions", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
     };

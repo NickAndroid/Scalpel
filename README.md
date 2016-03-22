@@ -5,8 +5,10 @@ Auto wired framework for Android
 [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
 
 ### Features
-1. AutoFound views, int, String, bool, array...
-2. OnClick listener, action, args.
+- Auto find views, int, String, bool, array...
+- OnClick listener, action, args.
+- Auto bind AIDL service
+- Auto find System services, PowerManager, TelephonyManager, etc
 
 ### Usage
 

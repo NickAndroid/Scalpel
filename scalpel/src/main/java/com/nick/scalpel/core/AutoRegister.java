@@ -26,9 +26,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD})
 @Retention(RUNTIME)
 @Documented
-public @interface AutoFound {
-    int id() default -1;
-
-    AutoFoundType type() default AutoFoundType.Auto;
+public @interface AutoRegister {
+    String[] actions() default {};
 }
-

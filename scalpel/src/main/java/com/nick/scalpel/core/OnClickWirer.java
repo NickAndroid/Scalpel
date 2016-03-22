@@ -146,7 +146,7 @@ public class OnClickWirer extends AbsFieldWirer {
                     ReflectionUtils.invokeMethod(finalActionMethod, o, args);
                 }
             });
-            if (debug) Log.d(logTag, "OnClickWirer action, Auto wired: " + field.getName());
+            if (debug) Log.d(logTag, "OnClickWirer actions, Auto wired: " + field.getName());
         }
     }
 
