@@ -24,7 +24,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.nick.scalpel.ScalpelAutoService;
-import com.nick.scalpel.intarnal.AutoFound;
+import com.nick.scalpel.core.AutoFound;
 
 public class MyService extends ScalpelAutoService {
 

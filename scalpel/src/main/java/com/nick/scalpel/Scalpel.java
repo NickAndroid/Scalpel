@@ -23,11 +23,11 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
-import com.nick.scalpel.intarnal.AutoBindWirer;
-import com.nick.scalpel.intarnal.AutoFoundWirer;
-import com.nick.scalpel.intarnal.FieldWirer;
-import com.nick.scalpel.intarnal.OnClickWirer;
-import com.nick.scalpel.intarnal.OnTouchWirer;
+import com.nick.scalpel.core.AutoBindWirer;
+import com.nick.scalpel.core.AutoFoundWirer;
+import com.nick.scalpel.core.FieldWirer;
+import com.nick.scalpel.core.OnClickWirer;
+import com.nick.scalpel.core.OnTouchWirer;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;

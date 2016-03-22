@@ -1,4 +1,4 @@
-package com.nick.scalpel.intarnal.utils;
+package com.nick.scalpel.core.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

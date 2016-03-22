@@ -37,12 +37,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.nick.scalpel.intarnal.OnTouch;
+import com.nick.scalpel.core.OnTouch;
 import com.nick.scalpel.ScalpelAutoActivity;
-import com.nick.scalpel.intarnal.AutoBind;
-import com.nick.scalpel.intarnal.AutoFound;
-import com.nick.scalpel.intarnal.OnClick;
-import com.nick.scalpel.intarnal.Type;
+import com.nick.scalpel.core.AutoBind;
+import com.nick.scalpel.core.AutoFound;
+import com.nick.scalpel.core.OnClick;
+import com.nick.scalpel.core.Type;
 
 import java.util.Arrays;
 

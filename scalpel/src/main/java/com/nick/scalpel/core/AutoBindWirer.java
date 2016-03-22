@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.intarnal;
+package com.nick.scalpel.core;
 
 import android.app.Activity;
 import android.app.Service;
@@ -28,8 +28,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
-import com.nick.scalpel.intarnal.utils.Preconditions;
-import com.nick.scalpel.intarnal.utils.ReflectionUtils;
+import com.nick.scalpel.core.utils.Preconditions;
+import com.nick.scalpel.core.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.intarnal;
+package com.nick.scalpel.core;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -26,10 +26,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD})
 @Retention(RUNTIME)
 @Documented
-public @interface OnClick {
-    String listener() default "";
+public @interface AutoAdapt {
+    String[] data() default "";
 
-    String action() default "";
-
-    String[] args() default {};
+    int dataRes() default -1;
 }

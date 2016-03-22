@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nick.scalpel.intarnal.utils;
+package com.nick.scalpel.core.utils;
 
 import android.os.Looper;
 

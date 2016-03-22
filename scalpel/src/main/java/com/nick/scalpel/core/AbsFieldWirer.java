@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.intarnal;
+package com.nick.scalpel.core;
 
 import com.nick.scalpel.config.Configuration;
 

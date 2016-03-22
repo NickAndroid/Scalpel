@@ -34,9 +34,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nick.scalpel.ScalpelAutoFragment;
-import com.nick.scalpel.intarnal.AutoFound;
-import com.nick.scalpel.intarnal.OnClick;
-import com.nick.scalpel.intarnal.Type;
+import com.nick.scalpel.core.AutoFound;
+import com.nick.scalpel.core.OnClick;
+import com.nick.scalpel.core.Type;
 
 public class MyFragment extends ScalpelAutoFragment {
 
