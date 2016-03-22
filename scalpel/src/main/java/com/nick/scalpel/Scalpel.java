@@ -26,6 +26,7 @@ import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AutoBindWirer;
 import com.nick.scalpel.core.AutoFoundWirer;
 import com.nick.scalpel.core.AutoRegisterWirer;
+import com.nick.scalpel.core.AutoRequestFullScreenWirer;
 import com.nick.scalpel.core.AutoRequestPermissionWirer;
 import com.nick.scalpel.core.ClassWirer;
 import com.nick.scalpel.core.FieldWirer;
@@ -67,6 +68,7 @@ public class Scalpel {
         mFieldWirers.add(new AutoRegisterWirer(usingConfig));
 
         mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
+        mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig));
     }
 
     public void wire(Activity activity) {

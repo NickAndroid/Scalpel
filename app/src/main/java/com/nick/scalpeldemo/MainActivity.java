@@ -44,6 +44,7 @@ import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
 import com.nick.scalpel.core.AutoFound;
 import com.nick.scalpel.core.AutoFoundType;
+import com.nick.scalpel.core.AutoRequestFullScreen;
 import com.nick.scalpel.core.AutoRequirePermission;
 import com.nick.scalpel.core.OnClick;
 import com.nick.scalpel.core.OnTouch;
@@ -51,7 +52,9 @@ import com.nick.scalpel.core.OnTouch;
 import java.util.Arrays;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-@AutoRequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE})
+@AutoRequestFullScreen(viewToTriggerRestore = R.id.hello)
+@AutoRequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.CALL_PHONE})
 public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
     @AutoFound(id = R.id.toolbar, type = AutoFoundType.View)
