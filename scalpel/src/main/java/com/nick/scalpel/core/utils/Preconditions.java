@@ -148,9 +148,8 @@ public class Preconditions {
 
     /**
      * Ensures that the argument floating point value is a finite number.
-     * <p/>
-     * <p>A finite number is defined to be both representable (that is, not NaN) and
-     * not infinite (that is neither positive or negative infinity).</p>
+     * A finite number is defined to be both representable (that is, not NaN) and
+     * not infinite (that is neither positive or negative infinity).
      *
      * @param value     a floating point value
      * @param valueName the name of the argument to use if the check fails
@@ -169,9 +168,8 @@ public class Preconditions {
 
     /**
      * Ensures that the argument floating point value is within the inclusive range.
-     * <p/>
-     * <p>While this can be used to range check against +/- infinity, note that all NaN numbers
-     * will always be out of range.</p>
+     * While this can be used to range check against +/- infinity, note that all NaN numbers
+     * will always be out of range.
      *
      * @param value     a floating point value
      * @param lower     the lower endpoint of the inclusive range
@@ -294,9 +292,8 @@ public class Preconditions {
 
     /**
      * Ensures that all elements in the argument floating point array are within the inclusive range
-     * <p/>
-     * <p>While this can be used to range check against +/- infinity, note that all NaN numbers
-     * will always be out of range.</p>
+     * While this can be used to range check against +/- infinity, note that all NaN numbers
+     * will always be out of range.
      *
      * @param value     a floating point array of values
      * @param lower     the lower endpoint of the inclusive range
