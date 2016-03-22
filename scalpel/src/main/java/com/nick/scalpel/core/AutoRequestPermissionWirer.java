@@ -50,21 +50,21 @@ public class AutoRequestPermissionWirer extends AbsClassWirer {
 
         Activity activity = (Activity) obj;
 
-        Preconditions.checkState(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
 
         AutoRequirePermission autoRequirePermission = activity.getClass().getAnnotation(AutoRequirePermission.class);
         int code = autoRequirePermission.requestCode();
 
         String[] scope = autoRequirePermission.permissions();
+        String[] required;
         if (scope.length == 0) {
             String[] declaredPerms = getPkgInfo(activity).requestedPermissions;
-            String[] required = extractUnGranted(activity, declaredPerms);
-            if (required == null) return;
-            activity.requestPermissions(required, code);
+            required = extractUnGranted(activity, declaredPerms);
         } else {
-            String[] required = extractUnGranted(activity, scope);
-            activity.requestPermissions(required, code);
+            required = extractUnGranted(activity, scope);
         }
+        if (required == null || required.length == 0) return;
+        activity.requestPermissions(required, code);
     }
 
     private String[] extractUnGranted(Activity activity, String[] declaredPerms) {
