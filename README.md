@@ -9,6 +9,14 @@ Auto wired framework for Android
 2. OnClick listener, action, args.
 
 ### Usage
+
+Add dependencies
+``` java
+dependencies {
+    compile 'com.nick.scalpel:scalpel:0.3'
+}
+```
+
 1. Configurations customize:
 ``` java
 public class MyApplication extends Application {
@@ -56,7 +64,7 @@ public class ViewHolder {
 
 ### Example
 ``` java
-public class MainActivity extends ScalpelAutoActivity {
+public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
     @AutoFound(id = R.id.toolbar, type = Type.View)
     Toolbar toolbar;
@@ -118,6 +126,11 @@ public class MainActivity extends ScalpelAutoActivity {
     public void showSnack(String content, String owner) {
         Snackbar.make(getWindow().getDecorView(), owner + ": " + content, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    @Override
+    public void onServiceBound(ComponentName name, ServiceConnection connection) {
+        mCallback.onServiceBound(name, connection);
     }
 }
 ```
