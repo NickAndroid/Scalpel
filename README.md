@@ -7,8 +7,9 @@ Auto wired framework for Android
 ### Features
 - Auto find views, int, String, bool, array...
 - OnClick listener, action, args.
-- Auto bind AIDL service
+- Auto bind AIDL service.
 - Auto find System services, PowerManager, TelephonyManager, etc
+- Auto require permission (for SDK above M).
 
 ### Usage
 

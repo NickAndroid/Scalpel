@@ -26,6 +26,8 @@ import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AutoBindWirer;
 import com.nick.scalpel.core.AutoFoundWirer;
 import com.nick.scalpel.core.AutoRegisterWirer;
+import com.nick.scalpel.core.AutoRequestPermissionWirer;
+import com.nick.scalpel.core.ClassWirer;
 import com.nick.scalpel.core.FieldWirer;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
@@ -43,10 +45,12 @@ public class Scalpel {
 
     private static Scalpel ourInjection = new Scalpel();
 
-    private final Set<FieldWirer> mWirers;
+    private final Set<FieldWirer> mFieldWirers;
+    private final Set<ClassWirer> mClassWirers;
 
     public Scalpel() {
-        mWirers = new HashSet<>();
+        mFieldWirers = new HashSet<>();
+        mClassWirers = new HashSet<>();
     }
 
     public static Scalpel getDefault() {
@@ -56,17 +60,20 @@ public class Scalpel {
     public void config(Configuration configuration) {
         Configuration usingConfig = configuration == null ? Configuration.DEFAULT : configuration;
         AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
-        mWirers.add(autoFoundWirer);
-        mWirers.add(new OnClickWirer(autoFoundWirer, usingConfig));
-        mWirers.add(new OnTouchWirer(autoFoundWirer, usingConfig));
-        mWirers.add(new AutoBindWirer(usingConfig));
-        mWirers.add(new AutoRegisterWirer(usingConfig));
+        mFieldWirers.add(autoFoundWirer);
+        mFieldWirers.add(new OnClickWirer(autoFoundWirer, usingConfig));
+        mFieldWirers.add(new OnTouchWirer(autoFoundWirer, usingConfig));
+        mFieldWirers.add(new AutoBindWirer(usingConfig));
+        mFieldWirers.add(new AutoRegisterWirer(usingConfig));
+
+        mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
     }
 
     public void wire(Activity activity) {
+        wireClz(activity);
         Class clz = activity.getClass();
         for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mWirers) {
+            for (FieldWirer wirer : mFieldWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(activity, field);
                 }
@@ -75,9 +82,10 @@ public class Scalpel {
     }
 
     public void wire(Service service) {
+        wireClz(service);
         Class clz = service.getClass();
         for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mWirers) {
+            for (FieldWirer wirer : mFieldWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(service, field);
                 }
@@ -86,9 +94,10 @@ public class Scalpel {
     }
 
     public void wire(Fragment fragment) {
+        wireClz(fragment);
         Class clz = fragment.getClass();
         for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mWirers) {
+            for (FieldWirer wirer : mFieldWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(fragment, field);
                 }
@@ -97,9 +106,10 @@ public class Scalpel {
     }
 
     public void wire(Context context, Object target) {
+        wireClz(target);
         Class clz = target.getClass();
         for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mWirers) {
+            for (FieldWirer wirer : mFieldWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(context, target, field);
                     break;
@@ -109,13 +119,23 @@ public class Scalpel {
     }
 
     public void wire(View rootView, Object target) {
+        wireClz(target);
         Class clz = target.getClass();
         for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mWirers) {
+            for (FieldWirer wirer : mFieldWirers) {
                 if (field.isAnnotationPresent(wirer.annotationClass())) {
                     wirer.wire(rootView, target, field);
                     break;
                 }
+            }
+        }
+    }
+
+    private void wireClz(Object o) {
+        Class clz = o.getClass();
+        for (ClassWirer clzWirer : mClassWirers) {
+            if (clz.isAnnotationPresent(clzWirer.annotationClass())) {
+                clzWirer.wire(o);
             }
         }
     }
