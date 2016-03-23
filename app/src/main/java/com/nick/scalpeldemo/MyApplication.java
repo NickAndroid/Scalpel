@@ -25,6 +25,12 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Scalpel.getDefault().config(Configuration.builder().autoFindIfNull(true).debug(true).logTag("Scalpel").build());
+        Scalpel.getDefault()
+                .application(this)
+                .config(Configuration.builder()
+                        .autoFindIfNull(true)
+                        .debug(true)
+                        .logTag(null)
+                        .build());
     }
 }

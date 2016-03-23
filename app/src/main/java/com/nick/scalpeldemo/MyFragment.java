@@ -36,11 +36,10 @@ import android.widget.TextView;
 import com.nick.scalpel.ScalpelAutoFragment;
 import com.nick.scalpel.core.AutoFound;
 import com.nick.scalpel.core.OnClick;
-import com.nick.scalpel.core.AutoFoundType;
 
 public class MyFragment extends ScalpelAutoFragment {
 
-    @AutoFound(id = R.id.toolbar, type = AutoFoundType.View)
+    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.View)
     Toolbar toolbar;
 
     @AutoFound(id = R.id.fab)
@@ -50,22 +49,22 @@ public class MyFragment extends ScalpelAutoFragment {
     @AutoFound(id = R.id.hello)
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFoundType.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFoundType.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFoundType.String)
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFoundType.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = AutoFoundType.StringArray)
+    @AutoFound(id = R.array.strs, type = AutoFound.Type.StringArray)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFoundType.IntArray)
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.IntArray)
     int[] ints;
 
     @AutoFound

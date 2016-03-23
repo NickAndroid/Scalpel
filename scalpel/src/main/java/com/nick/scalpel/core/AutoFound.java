@@ -16,6 +16,17 @@
 
 package com.nick.scalpel.core;
 
+import android.accounts.AccountManager;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.content.SharedPreferences;
+import android.os.PowerManager;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
+import android.view.LayoutInflater;
+import android.view.WindowManager;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -29,6 +40,34 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface AutoFound {
     int id() default -1;
 
-    AutoFoundType type() default AutoFoundType.Auto;
+    Type type() default Type.Auto;
+
+    enum Type {
+
+        Auto(null),
+        PM(PowerManager.class),
+        WM(WindowManager.class),
+        Inflater(LayoutInflater.class),
+        Account(AccountManager.class),
+        AM(ActivityManager.class),
+        Alarm(AlarmManager.class),
+        NM(NotificationManager.class),
+        TM(TelephonyManager.class),
+        TCM(TelecomManager.class),
+        SP(SharedPreferences.class),
+        View(android.view.View.class),
+        Color(int.class),
+        String(String.class),
+        Bool(boolean.class),
+        Integer(int.class),
+        StringArray(String[].class),
+        IntArray(int[].class);
+
+        Class targetClass;
+
+        Type(Class targetClass) {
+            this.targetClass = targetClass;
+        }
+    }
 }
 

@@ -23,8 +23,13 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,7 +48,8 @@ import android.widget.TextView;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
 import com.nick.scalpel.core.AutoFound;
-import com.nick.scalpel.core.AutoFoundType;
+import com.nick.scalpel.core.AutoRecycle;
+import com.nick.scalpel.core.AutoRegister;
 import com.nick.scalpel.core.AutoRequestFullScreen;
 import com.nick.scalpel.core.AutoRequirePermission;
 import com.nick.scalpel.core.OnClick;
@@ -57,7 +63,7 @@ import java.util.Arrays;
         Manifest.permission.CALL_PHONE})
 public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
-    @AutoFound(id = R.id.toolbar, type = AutoFoundType.View)
+    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.View)
     Toolbar toolbar;
 
     @AutoFound(id = R.id.fab)
@@ -68,22 +74,22 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @OnClick(listener = "mokeListener")
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFoundType.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFoundType.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFoundType.String)
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFoundType.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = AutoFoundType.StringArray)
+    @AutoFound(id = R.array.strs, type = AutoFound.Type.StringArray)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFoundType.IntArray)
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.IntArray)
     int[] ints;
 
     @AutoFound
@@ -104,8 +110,21 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @AutoFound
     AlarmManager alarmManager;
 
-    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this")
+    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+            , autoUnbind = true)
     IMyAidlInterface mService;
+
+    @AutoRegister(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+            , autoUnRegister = true)
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Scalpel.Demo", "onReceive, intent = " + intent.getAction());
+        }
+    };
+
+    @AutoRecycle
+    Bitmap bitmap;
 
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
@@ -126,7 +145,7 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
 
     private AutoBind.Callback mCallback = new AutoBind.Callback() {
         @Override
-        public void onServiceBound(ComponentName name, ServiceConnection connection) {
+        public void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent) {
             Log.d("Scalpel.Demo", "onServiceBound, service = " + mService);
         }
 
@@ -149,22 +168,26 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
 
         new ViewHolder(this);
 
-        Log.d("Scalpel.Demo", "pm = " + pm);
-        Log.d("Scalpel.Demo", "tm = " + tm);
-        Log.d("Scalpel.Demo", "nm = " + nm);
-        Log.d("Scalpel.Demo", "accountManager = " + accountManager);
-        Log.d("Scalpel.Demo", "am = " + am);
-        Log.d("Scalpel.Demo", "alarmManager = " + alarmManager);
+        log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
 
         // getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
 
-        Log.d("Scalpel.Demo", "service = " + mService);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bitmap);
+        log(bitmap);
+
+        log(mService);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d("Scalpel.Demo", "service = " + mService);
+                log(mService);
             }
         }, 3000);
+    }
+
+    void log(Object... os) {
+        for (Object o : os) {
+            Log.d(getClass().getName(), String.valueOf(o));
+        }
     }
 
     public void showSnack(String content, String owner) {
@@ -195,8 +218,8 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     }
 
     @Override
-    public void onServiceBound(ComponentName name, ServiceConnection connection) {
-        mCallback.onServiceBound(name, connection);
+    public void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent) {
+        mCallback.onServiceBound(name, connection, intent);
     }
 
     @Override

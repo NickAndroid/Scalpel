@@ -16,16 +16,9 @@
 
 package com.nick.scalpel.core;
 
-import com.nick.scalpel.config.Configuration;
+import android.app.Application;
 
-public abstract class AbsFieldWirer implements FieldWirer {
-    protected boolean debug;
-    protected String logTag;
-
-    public AbsFieldWirer(Configuration configuration) {
-        this.debug = configuration.isDebug();
-        this.logTag = configuration.getLogTag() == null
-                ? getClass().getSimpleName()
-                : configuration.getLogTag();
-    }
+public interface LifeCycleManager {
+    boolean registerActivityLifecycleCallbacks(Application.ActivityLifecycleCallbacks callback);
+    boolean unRegisterActivityLifecycleCallbacks(Application.ActivityLifecycleCallbacks callback);
 }

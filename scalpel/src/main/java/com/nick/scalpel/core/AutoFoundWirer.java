@@ -101,7 +101,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
         wire(service.getApplicationContext(), service, field);
     }
 
-    private void wireFromContext(Context context, AutoFoundType type, int idRes, Resources.Theme theme, Field field, Object forWho) {
+    private void wireFromContext(Context context, AutoFound.Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
         Resources resources = context.getResources();
         switch (type) {
             case String:
@@ -170,9 +170,9 @@ public class AutoFoundWirer extends AbsFieldWirer {
         if (fieldObject != null && !isBaseType) return null;
 
         AutoFound found = field.getAnnotation(AutoFound.class);
-        AutoFoundType type = found.type();
+        AutoFound.Type type = found.type();
 
-        if (type == AutoFoundType.Auto) {
+        if (type == AutoFound.Type.Auto) {
             type = autoDetermineType(field.getType());
             if (type == null) return null;
             return new WireParam(type, found.id());
@@ -181,11 +181,11 @@ public class AutoFoundWirer extends AbsFieldWirer {
         return null;
     }
 
-    private AutoFoundType autoDetermineType(Class clz) {
-        AutoFoundType[] all = AutoFoundType.values();
+    private AutoFound.Type autoDetermineType(Class clz) {
+        AutoFound.Type[] all = AutoFound.Type.values();
         int matchCnt = 0;
-        AutoFoundType found = null;
-        for (AutoFoundType t : all) {
+        AutoFound.Type found = null;
+        for (AutoFound.Type t : all) {
             if (isTypeOf(clz, t.targetClass)) {
                 matchCnt++;
                 if (matchCnt > 1) return null;
@@ -222,10 +222,10 @@ public class AutoFoundWirer extends AbsFieldWirer {
     }
 
     class WireParam {
-        AutoFoundType type;
+        AutoFound.Type type;
         int idRes;
 
-        public WireParam(AutoFoundType type, int idRes) {
+        public WireParam(AutoFound.Type type, int idRes) {
             this.type = type;
             this.idRes = idRes;
         }

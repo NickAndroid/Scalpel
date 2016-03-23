@@ -17,19 +17,26 @@
 package com.nick.scalpel;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.Service;
 import android.content.Context;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AutoBindWirer;
 import com.nick.scalpel.core.AutoFoundWirer;
+import com.nick.scalpel.core.AutoRecycleWirer;
 import com.nick.scalpel.core.AutoRegisterWirer;
 import com.nick.scalpel.core.AutoRequestFullScreenWirer;
 import com.nick.scalpel.core.AutoRequestPermissionWirer;
 import com.nick.scalpel.core.ClassWirer;
 import com.nick.scalpel.core.FieldWirer;
+import com.nick.scalpel.core.HandlerSupplier;
+import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
 
@@ -42,33 +49,60 @@ import java.util.Set;
  * To get the instance of Scalpel you can use {@link #getDefault()}
  * or create an instance manually.
  */
-public class Scalpel {
+public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
-    private static Scalpel ourInjection = new Scalpel();
+    private static Scalpel ourScalpel;
 
     private final Set<FieldWirer> mFieldWirers;
     private final Set<ClassWirer> mClassWirers;
 
+    private Application mApp;
+    private Handler mHandler;
+
+    private String mLogTag;
+
     public Scalpel() {
         mFieldWirers = new HashSet<>();
         mClassWirers = new HashSet<>();
+        mHandler = new Handler();
     }
 
-    public static Scalpel getDefault() {
-        return ourInjection;
+    /**
+     * Get the default shared single instance of {@link Scalpel}
+     *
+     * @return The default instance of {@link Scalpel}
+     */
+    public synchronized static Scalpel getDefault() {
+        if (ourScalpel == null) ourScalpel = new Scalpel();
+        return ourScalpel;
     }
 
-    public void config(Configuration configuration) {
+    /**
+     * Assign the application to {@link Scalpel}
+     *
+     * @param application Application instance of this app.
+     * @return The instance of {@link Scalpel}
+     * @see Application
+     */
+    public Scalpel application(Application application) {
+        this.mApp = application;
+        return this;
+    }
+
+    public Scalpel config(Configuration configuration) {
         Configuration usingConfig = configuration == null ? Configuration.DEFAULT : configuration;
+        mLogTag = usingConfig.getLogTag();
         AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
         mFieldWirers.add(autoFoundWirer);
         mFieldWirers.add(new OnClickWirer(autoFoundWirer, usingConfig));
         mFieldWirers.add(new OnTouchWirer(autoFoundWirer, usingConfig));
-        mFieldWirers.add(new AutoBindWirer(usingConfig));
-        mFieldWirers.add(new AutoRegisterWirer(usingConfig));
+        mFieldWirers.add(new AutoBindWirer(usingConfig, this));
+        mFieldWirers.add(new AutoRegisterWirer(usingConfig, this));
+        mFieldWirers.add(new AutoRecycleWirer(usingConfig, this));
 
         mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
-        mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig));
+        mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig, this));
+        return this;
     }
 
     public void wire(Activity activity) {
@@ -140,5 +174,33 @@ public class Scalpel {
                 clzWirer.wire(o);
             }
         }
+    }
+
+    @Override
+    public boolean registerActivityLifecycleCallbacks(Application.ActivityLifecycleCallbacks callback) {
+        if (mApp != null) {
+            mApp.registerActivityLifecycleCallbacks(callback);
+            return true;
+        }
+        Log.e(mLogTag, "Application not specify, call Scalpel.application() to set one!");
+        return false;
+    }
+
+    @Override
+    public boolean unRegisterActivityLifecycleCallbacks(final Application.ActivityLifecycleCallbacks callback) {
+        // Post this task instead of directly call to avoid List modify errors.
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mApp.unregisterActivityLifecycleCallbacks(callback);
+            }
+        });
+        return true;
+    }
+
+    @NonNull
+    @Override
+    public Handler getHandler() {
+        return mHandler;
     }
 }

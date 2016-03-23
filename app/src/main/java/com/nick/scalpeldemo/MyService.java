@@ -41,6 +41,7 @@ public class MyService extends ScalpelAutoService {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d("Scalpel.MyService", "pm = " + pm);
+        sendBroadcast(new Intent("com.nick.service.bind"));
         return new MyStub();
     }
 

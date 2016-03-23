@@ -19,7 +19,6 @@ package com.nick.scalpel.core;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,14 +28,14 @@ import com.nick.scalpel.core.utils.Preconditions;
 
 import java.lang.annotation.Annotation;
 
-@NotTested
+@Beta
 public class AutoRequestFullScreenWirer extends AbsClassWirer {
 
     private Handler mHandler;
 
-    public AutoRequestFullScreenWirer(Configuration configuration) {
+    public AutoRequestFullScreenWirer(Configuration configuration, HandlerSupplier supplier) {
         super(configuration);
-        mHandler = new Handler(Looper.getMainLooper());
+        mHandler = supplier.getHandler();
     }
 
     @Override

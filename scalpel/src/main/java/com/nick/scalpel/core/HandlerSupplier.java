@@ -16,16 +16,10 @@
 
 package com.nick.scalpel.core;
 
-import com.nick.scalpel.config.Configuration;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 
-public abstract class AbsFieldWirer implements FieldWirer {
-    protected boolean debug;
-    protected String logTag;
-
-    public AbsFieldWirer(Configuration configuration) {
-        this.debug = configuration.isDebug();
-        this.logTag = configuration.getLogTag() == null
-                ? getClass().getSimpleName()
-                : configuration.getLogTag();
-    }
+public interface HandlerSupplier {
+    @NonNull
+    Handler getHandler();
 }
