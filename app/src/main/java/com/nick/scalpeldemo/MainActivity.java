@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IPowerManager;
 import android.os.PowerManager;
+import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -45,6 +46,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.internal.telephony.ITelephony;
+import com.android.internal.telephony.ITelephonyListener;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
 import com.nick.scalpel.core.AutoFound;
@@ -131,6 +134,9 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @SystemService
     IPowerManager powerManager;
 
+    @SystemService
+    ITelephony telephony;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -181,6 +187,21 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         log(mService);
 
         log(powerManager);
+        log(telephony);
+
+        try {
+            telephony.setRadioPower(false);
+            telephony.addListener(new ITelephonyListener.Stub() {
+                @Override
+                public void onUpdate(int callId, int state, String number) throws RemoteException {
+                    log("onUpdate:" + number + ", state:" + state);
+                }
+            });
+        } catch (RemoteException e) {
+
+        } catch (SecurityException se) {
+            se.printStackTrace();
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override

@@ -24,6 +24,7 @@ import android.os.IPowerManager;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.android.internal.telephony.ITelephony;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.os.ServiceManager;
 import com.nick.scalpel.core.os.ServiceType;
@@ -88,6 +89,8 @@ public class SystemServiceWirer extends AbsFieldWirer {
             case POWER:
                 setField(field, object, IPowerManager.Stub.asInterface(binder));
                 break;
+            case TELEPHONY:
+                setField(field, object, ITelephony.Stub.asInterface(binder));
             case PACKAGE:
                 break;
         }

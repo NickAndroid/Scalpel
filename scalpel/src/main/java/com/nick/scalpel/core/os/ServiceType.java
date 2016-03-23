@@ -16,12 +16,16 @@
 
 package com.nick.scalpel.core.os;
 
+import android.content.Context;
 import android.os.IPowerManager;
+
+import com.android.internal.telephony.ITelephony;
 
 public enum ServiceType {
 
     AUTO(null, null),
-    POWER("power", IPowerManager.class),
+    POWER(Context.POWER_SERVICE, IPowerManager.class),
+    TELEPHONY(Context.TELEPHONY_SERVICE, ITelephony.class),
     PACKAGE("package", null);
 
     public String name;
