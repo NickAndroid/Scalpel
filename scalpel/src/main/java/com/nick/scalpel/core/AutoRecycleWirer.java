@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
@@ -57,14 +56,14 @@ public class AutoRecycleWirer extends AbsFieldWirer {
             public void onActivityDestroyed(Activity destroyed) {
                 super.onActivityDestroyed(destroyed);
                 if (destroyed == activity) {
-                    Log.v(logTag, "Recycle field: " + fieldName);
+                    logV("Recycle field: " + fieldName);
                     ReflectionUtils.setField(field, activity, null);
                     mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
                 }
             }
         });
         if (!registered) {
-            Log.e(logTag, "Failed to register life cycle callback!");
+            logE("Failed to register life cycle callback!");
         }
     }
 

@@ -21,7 +21,6 @@ import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -93,7 +92,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
     private void autoWire(final Object o, Field field) {
 
-        if (debug) Log.d(logTag, "Auto wiring: " + field.getName());
+        logD("Auto wiring: " + field.getName());
 
         Object fieldObjectWired = ReflectionUtils.getField(field, o);
         if (fieldObjectWired == null) return;
@@ -129,7 +128,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
             view.setOnTouchListener(onTouchListener);
 
-            if (debug) Log.d(logTag, "OnTouchWirer listener, Auto wired: " + field.getName());
+            logD("OnTouchWirer listener, Auto wired: " + field.getName());
         } else if (!TextUtils.isEmpty(action)) {
             final String[] args = onClick.args();
             Class[] argClz = new Class[args.length];
@@ -145,11 +144,11 @@ public class OnTouchWirer extends AbsFieldWirer {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     Object result = ReflectionUtils.invokeMethod(finalActionMethod, o, args);
-                    if (debug) Log.d(logTag, "OnTouchWirer onTouch invoked: " + result);
+                    logD("OnTouchWirer onTouch invoked: " + result);
                     return true;
                 }
             });
-            if (debug) Log.d(logTag, "OnTouchWirer actions, Auto wired: " + field.getName());
+            logD("OnTouchWirer actions, Auto wired: " + field.getName());
         }
     }
 

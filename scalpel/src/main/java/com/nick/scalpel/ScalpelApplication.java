@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 
-package com.nick.scalpeldemo;
+package com.nick.scalpel;
 
-import com.nick.scalpel.ScalpelApplication;
+import android.app.Application;
+import android.support.annotation.CallSuper;
 
-public class MyApplication extends ScalpelApplication {
-    // Noop
+import com.nick.scalpel.config.Configuration;
+
+public class ScalpelApplication extends Application {
+    @Override
+    @CallSuper
+    public void onCreate() {
+        super.onCreate();
+        Scalpel.getDefault()
+                .application(this)
+                .config(Configuration.builder()
+                        .autoFindIfNull(true)
+                        .debug(true)
+                        .logTag(getClass().getSimpleName())
+                        .build());
+    }
 }

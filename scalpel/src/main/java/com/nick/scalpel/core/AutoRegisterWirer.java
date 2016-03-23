@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
@@ -84,14 +83,14 @@ public class AutoRegisterWirer extends AbsFieldWirer {
                 public void onActivityDestroyed(Activity activity) {
                     super.onActivityDestroyed(activity);
                     if (activity == object) {
-                        Log.v(logTag, "UnRegister receiver for: " + fieldName);
+                        logV("UnRegister receiver for: " + fieldName);
                         context.unregisterReceiver(receiver);
                         mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
                     }
                 }
             });
             if (!registered) {
-                Log.e(logTag, "Failed to register life cycle callback!");
+                logE("Failed to register life cycle callback!");
             }
         }
     }

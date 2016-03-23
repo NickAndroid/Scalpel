@@ -25,7 +25,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
@@ -147,14 +146,14 @@ public class AutoBindWirer extends AbsFieldWirer {
                 public void onActivityDestroyed(Activity activity) {
                     super.onActivityDestroyed(activity);
                     if (activity == object) {
-                        Log.v(logTag, "unBind service for: " + fieldName);
+                        logV("unBind service for: " + fieldName);
                         context.unbindService(connection);
                         mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
                     }
                 }
             });
             if (!registered) {
-                Log.e(logTag, "Failed to register life cycle callback!");
+                logE("Failed to register life cycle callback!");
             }
         }
     }

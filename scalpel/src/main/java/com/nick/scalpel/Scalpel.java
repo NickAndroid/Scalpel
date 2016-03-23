@@ -59,6 +59,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
     private Application mApp;
     private Handler mHandler;
 
+    private Configuration mConfiguration;
+
     private String mLogTag;
 
     public Scalpel() {
@@ -89,8 +91,13 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         return this;
     }
 
+    public Configuration getConfiguration() {
+        return mConfiguration;
+    }
+
     public Scalpel config(Configuration configuration) {
         Configuration usingConfig = configuration == null ? Configuration.DEFAULT : configuration;
+        mConfiguration = usingConfig;
         mLogTag = usingConfig.getLogTag();
         AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
         mFieldWirers.add(autoFoundWirer);
