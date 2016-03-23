@@ -247,7 +247,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
         }
     }
 
-    private WireParam getParam(Object object, Field field) {
+    protected WireParam getParam(Object object, Field field) {
         makeAccessible(field);
 
         Object fieldObject = getField(field, object);
@@ -270,7 +270,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
         return null;
     }
 
-    private AutoFound.Type autoDetermineType(Class clz) {
+    protected AutoFound.Type autoDetermineType(Class clz) {
         AutoFound.Type[] all = AutoFound.Type.values();
         int matchCnt = 0;
         AutoFound.Type found = null;
@@ -304,7 +304,7 @@ public class AutoFoundWirer extends AbsFieldWirer {
         }
     }
 
-    private boolean isTypeOf(Class clz, Class target) {
+    protected boolean isTypeOf(Class clz, Class target) {
         if (clz == target) return true;
         Class sup = clz.getSuperclass();
         return sup != null && isTypeOf(sup, target);

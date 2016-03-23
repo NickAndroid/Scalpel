@@ -13,6 +13,7 @@ Auto wired framework for Android
 - Auto require permission (for SDK above M).
 - Auto require full screen for Activity.
 - Auto recycle fields for Activity.
+- System service, IPowerManager, etc(mainly for root-ed devices).
 
 ### Usage
 
@@ -176,7 +177,11 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         }
     };
 
+    @AutoFound(id = R.drawable.bitmap)
     @AutoRecycle
     Bitmap bitmap;
+
+    @SystemService
+    IPowerManager powerManager;
 }
 ```

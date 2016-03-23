@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IPowerManager;
 import android.os.PowerManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -53,6 +54,7 @@ import com.nick.scalpel.core.AutoRequestFullScreen;
 import com.nick.scalpel.core.AutoRequirePermission;
 import com.nick.scalpel.core.OnClick;
 import com.nick.scalpel.core.OnTouch;
+import com.nick.scalpel.core.SystemService;
 
 import java.util.Arrays;
 
@@ -126,6 +128,9 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @AutoRecycle
     Bitmap bitmap;
 
+    @SystemService
+    IPowerManager powerManager;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -174,6 +179,8 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
 
         log(bitmap);
         log(mService);
+
+        log(powerManager);
 
         new Handler().postDelayed(new Runnable() {
             @Override

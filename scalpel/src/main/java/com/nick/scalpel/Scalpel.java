@@ -39,6 +39,9 @@ import com.nick.scalpel.core.HandlerSupplier;
 import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
+import com.nick.scalpel.core.SystemServiceWirer;
+import com.nick.scalpel.core.os.DroidServiceManager;
+import com.nick.scalpel.core.os.ServiceManager;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -106,6 +109,13 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         mFieldWirers.add(new AutoBindWirer(usingConfig, this));
         mFieldWirers.add(new AutoRegisterWirer(usingConfig, this));
         mFieldWirers.add(new AutoRecycleWirer(usingConfig, this));
+
+        try {
+            ServiceManager serviceManager = new DroidServiceManager();
+            mFieldWirers.add(new SystemServiceWirer(usingConfig, serviceManager));
+        } catch (Exception e) {
+            Log.e(usingConfig.getLogTag(), "Failed to init ServiceManager:" + Log.getStackTraceString(e));
+        }
 
         mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
         mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig, this));
