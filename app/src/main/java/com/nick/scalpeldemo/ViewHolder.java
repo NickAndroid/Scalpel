@@ -47,22 +47,22 @@ public class ViewHolder {
     @AutoFound(id = R.id.hello)
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.INTEGER)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.COLOR)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.STRING)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.BOOL)
     boolean bool;
 
     @AutoFound(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.Auto)
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.AUTO)
     int[] ints;
 
     @AutoFound

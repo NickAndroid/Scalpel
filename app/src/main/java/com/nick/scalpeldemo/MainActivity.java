@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,7 +62,7 @@ import java.util.Arrays;
         Manifest.permission.CALL_PHONE})
 public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
-    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.View)
+    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.VIEW)
     Toolbar toolbar;
 
     @AutoFound(id = R.id.fab)
@@ -74,22 +73,22 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @OnClick(listener = "mokeListener")
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.INTEGER)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.COLOR)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.STRING)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.BOOL)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = AutoFound.Type.StringArray)
+    @AutoFound(id = R.array.strs, type = AutoFound.Type.STRING_ARRAY)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.IntArray)
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.INT_ARRAY)
     int[] ints;
 
     @AutoFound
@@ -123,6 +122,7 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         }
     };
 
+    @AutoFound(id = R.drawable.bitmap)
     @AutoRecycle
     Bitmap bitmap;
 
@@ -172,10 +172,9 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
 
         // getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
 
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bitmap);
         log(bitmap);
-
         log(mService);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -20,16 +20,23 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
-import com.nick.scalpel.core.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+
+import static com.nick.scalpel.core.utils.ReflectionUtils.getField;
+import static com.nick.scalpel.core.utils.ReflectionUtils.isBaseDataType;
+import static com.nick.scalpel.core.utils.ReflectionUtils.makeAccessible;
+import static com.nick.scalpel.core.utils.ReflectionUtils.setField;
 
 public class AutoFoundWirer extends AbsFieldWirer {
 
@@ -47,23 +54,10 @@ public class AutoFoundWirer extends AbsFieldWirer {
         WireParam param = getParam(activity, field);
         if (param == null) return;
         switch (param.type) {
-            case View:
+            case VIEW:
                 wire(activity.getWindow().getDecorView(), activity, field);
                 break;
-            case String:
-            case Color:
-            case Integer:
-            case Bool:
-            case StringArray:
-            case IntArray:
-            case PM:
-            case Account:
-            case Alarm:
-            case AM:
-            case WM:
-            case NM:
-            case TM:
-            case SP:
+            default:
                 wire(activity.getApplicationContext(), activity, field);
                 break;
         }
@@ -74,23 +68,10 @@ public class AutoFoundWirer extends AbsFieldWirer {
         WireParam param = getParam(fragment, field);
         if (param == null) return;
         switch (param.type) {
-            case View:
+            case VIEW:
                 wire(fragment.getView(), fragment, field);
                 break;
-            case String:
-            case Color:
-            case Integer:
-            case Bool:
-            case StringArray:
-            case IntArray:
-            case PM:
-            case Account:
-            case Alarm:
-            case AM:
-            case WM:
-            case NM:
-            case TM:
-            case SP:
+            default:
                 wire(fragment.getActivity(), fragment, field);
                 break;
         }
@@ -104,75 +85,183 @@ public class AutoFoundWirer extends AbsFieldWirer {
     private void wireFromContext(Context context, AutoFound.Type type, int idRes, Resources.Theme theme, Field field, Object forWho) {
         Resources resources = context.getResources();
         switch (type) {
-            case String:
-                ReflectionUtils.setField(field, forWho, resources.getString(idRes));
+            case STRING:
+                setField(field, forWho, resources.getString(idRes));
                 break;
-            case Color:
+            case COLOR:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ReflectionUtils.setField(field, forWho, resources.getColor(idRes, theme));
+                    setField(field, forWho, resources.getColor(idRes, theme));
                 } else {
-                    ReflectionUtils.setField(field, forWho, resources.getColor(idRes));
+                    //noinspection deprecation
+                    setField(field, forWho, resources.getColor(idRes));
                 }
                 break;
-            case Integer:
-                ReflectionUtils.setField(field, forWho, resources.getInteger(idRes));
+            case INTEGER:
+                setField(field, forWho, resources.getInteger(idRes));
                 break;
-            case Bool:
-                ReflectionUtils.setField(field, forWho, resources.getBoolean(idRes));
+            case BOOL:
+                setField(field, forWho, resources.getBoolean(idRes));
                 break;
-            case StringArray:
-                ReflectionUtils.setField(field, forWho, resources.getStringArray(idRes));
+            case STRING_ARRAY:
+                setField(field, forWho, resources.getStringArray(idRes));
                 break;
-            case IntArray:
-                ReflectionUtils.setField(field, forWho, resources.getIntArray(idRes));
+            case INT_ARRAY:
+                setField(field, forWho, resources.getIntArray(idRes));
                 break;
             case PM:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.POWER_SERVICE));
+                setField(field, forWho, context.getSystemService(Context.POWER_SERVICE));
                 break;
-            case Account:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.ACCOUNT_SERVICE));
+            case ACCOUNT:
+                setField(field, forWho, context.getSystemService(Context.ACCOUNT_SERVICE));
                 break;
-            case Alarm:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.ALARM_SERVICE));
+            case ALARM:
+                setField(field, forWho, context.getSystemService(Context.ALARM_SERVICE));
                 break;
             case AM:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.ACTIVITY_SERVICE));
+                setField(field, forWho, context.getSystemService(Context.ACTIVITY_SERVICE));
                 break;
             case WM:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.WINDOW_SERVICE));
+                setField(field, forWho, context.getSystemService(Context.WINDOW_SERVICE));
                 break;
             case NM:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.NOTIFICATION_SERVICE));
+                setField(field, forWho, context.getSystemService(Context.NOTIFICATION_SERVICE));
                 break;
             case TM:
-                ReflectionUtils.setField(field, forWho, context.getSystemService(Context.TELEPHONY_SERVICE));
+                setField(field, forWho, context.getSystemService(Context.TELEPHONY_SERVICE));
                 break;
             case TCM:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ReflectionUtils.setField(field, forWho, context.getSystemService(Context.TELECOM_SERVICE));
+                    setField(field, forWho, context.getSystemService(Context.TELECOM_SERVICE));
                 }
                 break;
             case SP:
-                ReflectionUtils.setField(field, forWho, PreferenceManager.getDefaultSharedPreferences(context));
+                setField(field, forWho, PreferenceManager.getDefaultSharedPreferences(context));
+                break;
+            case PKM:
+                setField(field, forWho, context.getPackageManager());
+                break;
+            case HANDLE:
+                setField(field, forWho, new Handler(Looper.getMainLooper()));
+                break;
+            case ASM:
+                setField(field, forWho, context.getSystemService(Context.ACCESSIBILITY_SERVICE));
+                break;
+            case CAP:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    setField(field, forWho, context.getSystemService(Context.CAPTIONING_SERVICE));
+                }
+                break;
+            case KGD:
+                setField(field, forWho, context.getSystemService(Context.KEYGUARD_SERVICE));
+                break;
+            case LOCATION:
+                setField(field, forWho, context.getSystemService(Context.LOCATION_SERVICE));
+                break;
+            case SEARCH:
+                setField(field, forWho, context.getSystemService(Context.SEARCH_SERVICE));
+                break;
+            case SENSOR:
+                setField(field, forWho, context.getSystemService(Context.SENSOR_SERVICE));
+                break;
+            case STORAGE:
+                setField(field, forWho, context.getSystemService(Context.STORAGE_SERVICE));
+                break;
+            case WALLPAPER:
+                setField(field, forWho, context.getSystemService(Context.WALLPAPER_SERVICE));
+                break;
+            case VIBRATOR:
+                setField(field, forWho, context.getSystemService(Context.VIBRATOR_SERVICE));
+                break;
+            case CONNECT:
+                setField(field, forWho, context.getSystemService(Context.CONNECTIVITY_SERVICE));
+                break;
+            case NETWORK_STATUS:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    setField(field, forWho, context.getSystemService(Context.NETWORK_STATS_SERVICE));
+                }
+                break;
+            case WIFI:
+                setField(field, forWho, context.getSystemService(Context.WIFI_SERVICE));
+                break;
+            case AUDIO:
+                setField(field, forWho, context.getSystemService(Context.AUDIO_SERVICE));
+                break;
+            case FP:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    setField(field, forWho, context.getSystemService(Context.FINGERPRINT_SERVICE));
+                }
+                break;
+            case MEDIA_ROUTER:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    setField(field, forWho, context.getSystemService(Context.MEDIA_ROUTER_SERVICE));
+                }
+                break;
+            case SUB:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    setField(field, forWho, context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE));
+                }
+                break;
+            case IME:
+                setField(field, forWho, context.getSystemService(Context.INPUT_METHOD_SERVICE));
+                break;
+            case CLIP_BOARD:
+                setField(field, forWho, context.getSystemService(Context.CLIPBOARD_SERVICE));
+                break;
+            case APP_WIDGET:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    setField(field, forWho, context.getSystemService(Context.APPWIDGET_SERVICE));
+                }
+                break;
+            case DEVICE_POLICY:
+                setField(field, forWho, context.getSystemService(Context.DEVICE_POLICY_SERVICE));
+                break;
+            case DOWNLOAD:
+                setField(field, forWho, context.getSystemService(Context.DOWNLOAD_SERVICE));
+                break;
+            case BATTERY:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    setField(field, forWho, context.getSystemService(Context.BATTERY_SERVICE));
+                }
+                break;
+            case NFC:
+                setField(field, forWho, context.getSystemService(Context.NFC_SERVICE));
+                break;
+            case DISPLAY:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    setField(field, forWho, context.getSystemService(Context.DISPLAY_SERVICE));
+                }
+                break;
+            case USER:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    setField(field, forWho, context.getSystemService(Context.USER_SERVICE));
+                }
+                break;
+            case APP_OPS:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    setField(field, forWho, context.getSystemService(Context.APP_OPS_SERVICE));
+                }
+                break;
+            case BITMAP:
+                setField(field, forWho, BitmapFactory.decodeResource(resources, idRes, null));
                 break;
         }
     }
 
     private WireParam getParam(Object object, Field field) {
-        ReflectionUtils.makeAccessible(field);
+        makeAccessible(field);
 
-        Object fieldObject = ReflectionUtils.getField(field, object);
+        Object fieldObject = getField(field, object);
 
         boolean isBaseType = false;
 
         if (fieldObject != null)
-            isBaseType = ReflectionUtils.isBaseDataType(fieldObject.getClass());
+            isBaseType = isBaseDataType(fieldObject.getClass());
         if (fieldObject != null && !isBaseType) return null;
 
         AutoFound found = field.getAnnotation(AutoFound.class);
         AutoFound.Type type = found.type();
 
-        if (type == AutoFound.Type.Auto) {
+        if (type == AutoFound.Type.AUTO) {
             type = autoDetermineType(field.getType());
             if (type == null) return null;
             return new WireParam(type, found.id());
@@ -207,8 +296,8 @@ public class AutoFoundWirer extends AbsFieldWirer {
         WireParam param = getParam(object, field);
         if (param == null) return;
         switch (param.type) {
-            case View:
-                ReflectionUtils.setField(field, object, root.findViewById(param.idRes));
+            case VIEW:
+                setField(field, object, root.findViewById(param.idRes));
                 break;
             default:
                 wire(root.getContext(), object, field);
