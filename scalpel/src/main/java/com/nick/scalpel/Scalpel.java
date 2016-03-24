@@ -33,17 +33,18 @@ import com.nick.scalpel.core.AutoRecycleWirer;
 import com.nick.scalpel.core.AutoRegisterWirer;
 import com.nick.scalpel.core.AutoRequestFullScreenWirer;
 import com.nick.scalpel.core.AutoRequestPermissionWirer;
+import com.nick.scalpel.core.AutoRequireRootWirer;
 import com.nick.scalpel.core.ClassWirer;
 import com.nick.scalpel.core.FieldWirer;
 import com.nick.scalpel.core.HandlerSupplier;
 import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
-import com.nick.scalpel.core.AutoRequireRootWirer;
 import com.nick.scalpel.core.SystemServiceWirer;
 import com.nick.scalpel.core.os.DroidRootRequester;
 import com.nick.scalpel.core.os.DroidServiceManager;
 import com.nick.scalpel.core.os.ServiceManager;
+import com.nick.scalpel.core.utils.Preconditions;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -126,64 +127,108 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
     }
 
     public void wire(Activity activity) {
-        wireClz(activity);
-        Class clz = activity.getClass();
-        for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mFieldWirers) {
-                if (field.isAnnotationPresent(wirer.annotationClass())) {
-                    wirer.wire(activity, field);
+        wire(activity, Scope.All);
+    }
+
+    public void wire(Activity activity, Scope scope) {
+        if (isInScope(scope, Scope.Class)) wireClz(activity);
+        if (isInScope(scope, Scope.Field)) {
+            Class clz = activity.getClass();
+            for (Field field : clz.getDeclaredFields()) {
+                for (FieldWirer wirer : mFieldWirers) {
+                    if (field.isAnnotationPresent(wirer.annotationClass())) {
+                        wirer.wire(activity, field);
+                    }
                 }
             }
         }
     }
 
     public void wire(Service service) {
-        wireClz(service);
-        Class clz = service.getClass();
-        for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mFieldWirers) {
-                if (field.isAnnotationPresent(wirer.annotationClass())) {
-                    wirer.wire(service, field);
+        wire(service, Scope.All);
+    }
+
+    public void wire(Service service, Scope scope) {
+        if (isInScope(scope, Scope.Class)) wireClz(service);
+        if (isInScope(scope, Scope.Field)) {
+            Class clz = service.getClass();
+            for (Field field : clz.getDeclaredFields()) {
+                for (FieldWirer wirer : mFieldWirers) {
+                    if (field.isAnnotationPresent(wirer.annotationClass())) {
+                        wirer.wire(service, field);
+                    }
                 }
             }
         }
     }
 
     public void wire(Fragment fragment) {
-        wireClz(fragment);
-        Class clz = fragment.getClass();
-        for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mFieldWirers) {
-                if (field.isAnnotationPresent(wirer.annotationClass())) {
-                    wirer.wire(fragment, field);
+        wire(fragment, Scope.All);
+    }
+
+    public void wire(Fragment fragment, Scope scope) {
+        if (isInScope(scope, Scope.Class)) wireClz(fragment);
+        if (isInScope(scope, Scope.Field)) {
+            Class clz = fragment.getClass();
+            for (Field field : clz.getDeclaredFields()) {
+                for (FieldWirer wirer : mFieldWirers) {
+                    if (field.isAnnotationPresent(wirer.annotationClass())) {
+                        wirer.wire(fragment, field);
+                    }
                 }
             }
         }
     }
 
     public void wire(Context context, Object target) {
-        wireClz(target);
-        Class clz = target.getClass();
-        for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mFieldWirers) {
-                if (field.isAnnotationPresent(wirer.annotationClass())) {
-                    wirer.wire(context, target, field);
-                    break;
+        wire(context, target, Scope.All);
+    }
+
+    public void wire(Context context, Object target, Scope scope) {
+        if (isInScope(scope, Scope.Class)) wireClz(target);
+        if (isInScope(scope, Scope.Field)) {
+            Class clz = target.getClass();
+            for (Field field : clz.getDeclaredFields()) {
+                for (FieldWirer wirer : mFieldWirers) {
+                    if (field.isAnnotationPresent(wirer.annotationClass())) {
+                        wirer.wire(context, target, field);
+                        break;
+                    }
                 }
             }
         }
     }
 
     public void wire(View rootView, Object target) {
-        wireClz(target);
-        Class clz = target.getClass();
-        for (Field field : clz.getDeclaredFields()) {
-            for (FieldWirer wirer : mFieldWirers) {
-                if (field.isAnnotationPresent(wirer.annotationClass())) {
-                    wirer.wire(rootView, target, field);
-                    break;
+        wire(rootView, target, Scope.All);
+    }
+
+    public void wire(View rootView, Object target, Scope scope) {
+        if (isInScope(scope, Scope.Class)) wireClz(target);
+        if (isInScope(scope, Scope.Field)) {
+            Class clz = target.getClass();
+            for (Field field : clz.getDeclaredFields()) {
+                for (FieldWirer wirer : mFieldWirers) {
+                    if (field.isAnnotationPresent(wirer.annotationClass())) {
+                        wirer.wire(rootView, target, field);
+                        break;
+                    }
                 }
             }
+        }
+    }
+
+    private boolean isInScope(Scope given, Scope expected) {
+        Preconditions.checkNotNull(given);
+        switch (expected) {
+            case Class:
+                return given == Scope.Class || given == Scope.All;
+            case Field:
+                return given == Scope.Field || given == Scope.All;
+            case All:
+                return given == Scope.All;
+            default:
+                return false;
         }
     }
 
