@@ -16,8 +16,21 @@
 
 package com.nick.scalpel.core.os;
 
-public interface RootRequester {
-    boolean requestRoot();
+import android.text.TextUtils;
 
-    Shell getShell();
+import com.nick.scalpel.core.SharedExecutor;
+
+public class AsyncShell extends Shell {
+
+    @Override
+    public boolean exec(final String command, final FeedbackReceiver receiver) {
+        if (TextUtils.isEmpty(command)) return false;
+        SharedExecutor.get().execute(new Runnable() {
+            @Override
+            public void run() {
+                AsyncShell.super.exec(command, receiver);
+            }
+        });
+        return true;
+    }
 }

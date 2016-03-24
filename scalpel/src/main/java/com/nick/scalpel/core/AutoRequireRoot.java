@@ -16,6 +16,10 @@
 
 package com.nick.scalpel.core;
 
+import android.support.annotation.Nullable;
+
+import com.nick.scalpel.core.os.Shell;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -38,6 +42,6 @@ public @interface AutoRequireRoot {
     }
 
     interface Callback {
-        void onRootResult(boolean hasRoot);
+        void onRootResult(boolean hasRoot, @Nullable Shell shell);
     }
 }

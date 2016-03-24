@@ -19,19 +19,16 @@ package com.nick.scalpel.core.os;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-
 public class DroidRootRequester implements RootRequester {
 
     static final String TAG = "RootRequester";
     private boolean mHasRootAccess = false;
+    private Shell mShell;
 
     @Override
     public boolean requestRoot() {
-        return mHasRootAccess || execRootCommand("id", new FeedbackReceiver() {
+        if (mShell == null) mShell = new Shell();
+        return mHasRootAccess || mShell.exec("id", new Shell.FeedbackReceiver() {
             @Override
             public boolean onFeedback(String feedback) {
                 boolean hasRoot = (!TextUtils.isEmpty(feedback) && feedback.contains("uid=0(root)"));
@@ -40,53 +37,9 @@ public class DroidRootRequester implements RootRequester {
                 return hasRoot;
             }
         }) && mHasRootAccess;
-
     }
 
-    public boolean execRootCommand(String command) {
-        return execRootCommand(command, null);
-    }
-
-    public boolean execRootCommand(String command, FeedbackReceiver receiver) {
-        Process process = null;
-        DataOutputStream os = null;
-        DataInputStream in;
-        try {
-            process = Runtime.getRuntime().exec("su");
-            os = new DataOutputStream(process.getOutputStream());
-            in = new DataInputStream(process.getInputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            os.writeBytes(command + "\n");
-            os.writeBytes("exit\n");
-            os.flush();
-            String line;
-            StringBuilder builder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-            if (receiver != null && receiver.onFeedback(builder.toString())) {
-                return true;
-            }
-            process.waitFor();
-        } catch (Exception e) {
-            Log.e(TAG, "su root - the device is not rooted, error message： " + e.getMessage());
-            return false;
-        } finally {
-            try {
-                if (null != os) {
-                    os.close();
-                }
-                if (null != process) {
-                    process.destroy();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
-    interface FeedbackReceiver {
-        boolean onFeedback(String feedback);
+    public Shell getShell() {
+        return mShell;
     }
 }

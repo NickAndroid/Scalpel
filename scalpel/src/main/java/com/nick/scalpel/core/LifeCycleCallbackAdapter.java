@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-public class LifeCycleCallbackAdapter implements Application.ActivityLifecycleCallbacks {
+class LifeCycleCallbackAdapter implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         // Noop

@@ -35,13 +35,12 @@ import android.os.Handler;
 import android.os.IPowerManager;
 import android.os.PowerManager;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -55,10 +54,11 @@ import com.nick.scalpel.core.AutoRecycle;
 import com.nick.scalpel.core.AutoRegister;
 import com.nick.scalpel.core.AutoRequestFullScreen;
 import com.nick.scalpel.core.AutoRequirePermission;
+import com.nick.scalpel.core.AutoRequireRoot;
 import com.nick.scalpel.core.OnClick;
 import com.nick.scalpel.core.OnTouch;
-import com.nick.scalpel.core.AutoRequireRoot;
 import com.nick.scalpel.core.SystemService;
+import com.nick.scalpel.core.os.Shell;
 
 import java.util.Arrays;
 
@@ -225,28 +225,6 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the actions bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle actions bar item clicks here. The actions bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent) {
         mCallback.onServiceBound(name, connection, intent);
     }
@@ -257,7 +235,14 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     }
 
     @Override
-    public void onRootResult(boolean hasRoot) {
-        log("onRootResult:" + hasRoot);
+    public void onRootResult(boolean hasRoot, @Nullable Shell shell) {
+        log("onRootResult:" + hasRoot + ", shell = " + shell);
+        if (shell != null) shell.exec("reboot", new Shell.FeedbackReceiver() {
+            @Override
+            public boolean onFeedback(String feedback) {
+                log("onFeedback:" + feedback);
+                return false;
+            }
+        });
     }
 }

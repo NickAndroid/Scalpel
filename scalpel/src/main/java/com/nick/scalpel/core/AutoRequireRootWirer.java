@@ -66,7 +66,7 @@ public class AutoRequireRootWirer extends AbsClassWirer {
                         break;
                 }
                 logV("Requesting root async, callback:" + callback);
-                new AsyncRootRequester(callback).start();
+                SharedExecutor.get().execute(new AsyncRootRequester(callback));
         }
     }
 
@@ -75,7 +75,7 @@ public class AutoRequireRootWirer extends AbsClassWirer {
         return AutoRequireRoot.class;
     }
 
-    class AsyncRootRequester extends Thread {
+    class AsyncRootRequester implements Runnable {
 
         AutoRequireRoot.Callback callback;
 
@@ -85,8 +85,7 @@ public class AutoRequireRootWirer extends AbsClassWirer {
 
         @Override
         public void run() {
-            super.run();
-            callback.onRootResult(mRequester.requestRoot());
+            callback.onRootResult(mRequester.requestRoot(), mRequester.getShell());
         }
     }
 

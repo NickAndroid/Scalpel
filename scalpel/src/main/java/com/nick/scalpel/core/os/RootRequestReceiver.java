@@ -16,8 +16,6 @@
 
 package com.nick.scalpel.core.os;
 
-public interface RootRequester {
-    boolean requestRoot();
-
-    Shell getShell();
+public interface RootRequestReceiver {
+    void onRootResult(boolean result, Shell shell);
 }
