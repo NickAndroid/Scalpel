@@ -25,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.android.internal.telephony.ITelephony;
+import com.nick.commands.sca.IScaService;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.os.DroidBinder;
 import com.nick.scalpel.core.os.ServiceManager;
@@ -95,6 +96,10 @@ public class SystemServiceWirer extends AbsFieldWirer {
                 break;
             case TELEPHONY:
                 setField(field, object, ITelephony.Stub.asInterface(binder));
+                break;
+            case SCA:
+                setField(field, object, IScaService.Stub.asInterface(binder));
+                break;
             case PACKAGE:
                 break;
         }

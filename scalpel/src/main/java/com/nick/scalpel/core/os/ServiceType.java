@@ -20,10 +20,12 @@ import android.content.Context;
 import android.os.IPowerManager;
 
 import com.android.internal.telephony.ITelephony;
+import com.nick.commands.sca.IScaService;
 
 public enum ServiceType {
 
     AUTO(null, null),
+    SCA("sca", IScaService.class),
     POWER(Context.POWER_SERVICE, IPowerManager.class),
     TELEPHONY(Context.TELEPHONY_SERVICE, ITelephony.class),
     PACKAGE("package", null);

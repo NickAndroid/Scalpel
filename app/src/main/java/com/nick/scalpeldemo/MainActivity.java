@@ -47,6 +47,7 @@ import android.widget.TextView;
 
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.telephony.ITelephonyListener;
+import com.nick.commands.sca.IScaService;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
 import com.nick.scalpel.core.AutoFound;
@@ -139,6 +140,9 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @SystemService
     ITelephony telephony;
 
+    @SystemService
+    IScaService scaService;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -211,6 +215,15 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
                 log(mService);
             }
         }, 3000);
+
+        log(scaService);
+
+        if (scaService != null) try {
+            scaService.run();
+            scaService.setRadioPower(false);
+        } catch (RemoteException e) {
+
+        }
     }
 
     void log(Object... os) {
@@ -237,7 +250,7 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @Override
     public void onRootResult(boolean hasRoot, @Nullable Shell shell) {
         log("onRootResult:" + hasRoot + ", shell = " + shell);
-        if (shell != null) shell.exec("reboot", new Shell.FeedbackReceiver() {
+        if (shell != null) shell.exec("sca", new Shell.FeedbackReceiver() {
             @Override
             public boolean onFeedback(String feedback) {
                 log("onFeedback:" + feedback);
