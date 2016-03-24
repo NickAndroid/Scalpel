@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.utils.Preconditions;
@@ -74,7 +73,7 @@ public class AutoRequestPermissionWirer extends AbsClassWirer {
         for (String info : declaredPerms) {
             int code = packageManager.checkPermission(info, activity.getPackageName());
             if (code == PackageManager.PERMISSION_GRANTED) continue;
-            Log.v(logTag, "Will request perm:" + info + ", current code:" + code);
+            logV("Will request perm:" + info + ", current code:" + code);
             requestList.add(info);
         }
         String[] out = new String[requestList.size()];

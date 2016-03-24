@@ -39,7 +39,9 @@ import com.nick.scalpel.core.HandlerSupplier;
 import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
+import com.nick.scalpel.core.AutoRequireRootWirer;
 import com.nick.scalpel.core.SystemServiceWirer;
+import com.nick.scalpel.core.os.DroidRootRequester;
 import com.nick.scalpel.core.os.DroidServiceManager;
 import com.nick.scalpel.core.os.ServiceManager;
 
@@ -119,6 +121,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
         mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
         mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig, this));
+        mClassWirers.add(new AutoRequireRootWirer(usingConfig, new DroidRootRequester()));
         return this;
     }
 

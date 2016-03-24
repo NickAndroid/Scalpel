@@ -13,14 +13,15 @@ Auto wired framework for Android
 - Auto require permission (for SDK above M).
 - Auto require full screen for Activity.
 - Auto recycle fields for Activity.
-- System service, IPowerManager, etc(mainly for root-ed devices).
+- System service, IPowerManager, etc(mainly used for System apps).
+- Auto require root.
 
 ### Usage
 
 Add dependencies
 ``` java
 dependencies {
-    compile 'com.nick.scalpel:scalpel:0.7'
+    compile 'com.nick.scalpel:scalpel:0.8'
 }
 ```
 

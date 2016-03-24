@@ -57,6 +57,7 @@ import com.nick.scalpel.core.AutoRequestFullScreen;
 import com.nick.scalpel.core.AutoRequirePermission;
 import com.nick.scalpel.core.OnClick;
 import com.nick.scalpel.core.OnTouch;
+import com.nick.scalpel.core.AutoRequireRoot;
 import com.nick.scalpel.core.SystemService;
 
 import java.util.Arrays;
@@ -65,7 +66,8 @@ import java.util.Arrays;
 @AutoRequestFullScreen(viewToTriggerRestore = R.id.hello)
 @AutoRequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.CALL_PHONE})
-public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
+@AutoRequireRoot(mode = AutoRequireRoot.Mode.Async, callback = "this")
+public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback, AutoRequireRoot.Callback {
 
     @AutoFound(id = R.id.toolbar, type = AutoFound.Type.VIEW)
     Toolbar toolbar;
@@ -252,5 +254,10 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @Override
     public void onServiceDisconnected(ComponentName name) {
         mCallback.onServiceDisconnected(name);
+    }
+
+    @Override
+    public void onRootResult(boolean hasRoot) {
+        log("onRootResult:" + hasRoot);
     }
 }

@@ -26,6 +26,7 @@ import android.view.View;
 
 import com.android.internal.telephony.ITelephony;
 import com.nick.scalpel.config.Configuration;
+import com.nick.scalpel.core.os.DroidBinder;
 import com.nick.scalpel.core.os.ServiceManager;
 import com.nick.scalpel.core.os.ServiceType;
 
@@ -77,6 +78,9 @@ public class SystemServiceWirer extends AbsFieldWirer {
     }
 
     private void blindWire(Object object, Field field) {
+        if (DroidBinder.getCallingUid() != 0 && DroidBinder.getCallingUid() != 1000) {
+            logE("You are not running in as root uid, wiring un-useful services?");
+        }
         ServiceType serviceType = getServiceType(object, field);
         if (serviceType == null) return;
         IBinder binder = (IBinder) mServiceManager.getServiceBinder(serviceType);
