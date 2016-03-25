@@ -28,4 +28,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface AutoRegister {
     String[] actions() default {};
+
+    boolean autoUnRegister() default false;
 }

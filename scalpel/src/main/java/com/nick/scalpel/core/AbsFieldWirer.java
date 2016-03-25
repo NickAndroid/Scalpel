@@ -16,14 +16,33 @@
 
 package com.nick.scalpel.core;
 
+import android.util.Log;
+
 import com.nick.scalpel.config.Configuration;
 
 public abstract class AbsFieldWirer implements FieldWirer {
-    protected boolean debug;
-    protected String logTag;
+
+    static final String LOG_TAG_CONNECTOR = ".";
+
+    private boolean debug;
+    private String logTag;
 
     public AbsFieldWirer(Configuration configuration) {
         this.debug = configuration.isDebug();
-        this.logTag = configuration.getLogTag();
+        this.logTag = configuration.getLogTag() == null
+                ? getClass().getSimpleName()
+                : configuration.getLogTag() + LOG_TAG_CONNECTOR + getClass().getSimpleName();
+    }
+
+    protected void logV(Object o) {
+        if (debug) Log.v(logTag, String.valueOf(o));
+    }
+
+    protected void logD(Object o) {
+        if (debug) Log.d(logTag, String.valueOf(o));
+    }
+
+    protected void logE(Object o) {
+        Log.e(logTag, String.valueOf(o));
     }
 }

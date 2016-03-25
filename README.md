@@ -1,22 +1,32 @@
+![Logo](art/logo.jpg)
+
 # Scalpel
-Auto wired framework for Android
+Enhanced auto injection framework for Android
 
 ### Latest version
 [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
 
-### Features
+### General Features
 - Auto find views, int, String, bool, array...
 - OnClick listener, action, args.
-- Auto bind AIDL service.
+- Auto bind/unbind AIDL service.
+- Auto (un)register receiver.
 - Auto find System services, PowerManager, TelephonyManager, etc
 - Auto require permission (for SDK above M).
+- Auto require full screen for Activity.
+- Auto recycle fields for Activity.
+- System service, IPowerManager, etc(mainly used for System apps).
+- Auto require root.
+
+### Enhanced features
+- System interface hook, using system api without permission granted and root access(bringing up...).
 
 ### Usage
 
 Add dependencies
 ``` java
 dependencies {
-    compile 'com.nick.scalpel:scalpel:0.3'
+    compile 'com.nick.scalpel:scalpel:0.8'
 }
 ```
 
@@ -34,9 +44,12 @@ public class MyApplication extends Application {
 2. Use auto activity or wire things manually
 ``` java
 public class MainActivity extends ScalpelAutoActivity {}
-
+```
+``` java
 public class MyFragment extends ScalpelAutoFragment {}
-
+```
+``` java
+@AutoRequireRoot(mode = AutoRequireRoot.Mode.Async, callback = "this")
 public class MyService extends ScalpelAutoService {}
 ```
 
@@ -49,91 +62,135 @@ public class ViewHolder {
     @OnClick(listener = "mokeListener")
     FloatingActionButton fab;
 
+    @OnClick(listener = "mokeListener")
+    @AutoFound(id = R.id.hello)
+    TextView hello;
+
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
+    int size;
+
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
+    int color;
+
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
+    String text;
+
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
+    boolean bool;
+
+    @AutoFound(id = R.array.strs)
+    String[] strs;
+
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.Auto)
+    int[] ints;
+
+    @AutoFound
+    PowerManager pm;
+
     @AutoFound
     TelephonyManager tm;
 
     @AutoFound
     NotificationManager nm;
 
+    @AutoFound
+    AccountManager accountManager;
+
+    @AutoFound
+    ActivityManager am;
+
+    @AutoFound
+    AlarmManager alarmManager;
+
+    private View.OnClickListener mokeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar.make(v, "Replace with your own actions", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
+    };
+
     ViewHolder(Context context) {
         View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
         Scalpel.getDefault().wire(rootV, this);
-        Scalpel.getDefault().wire(context, this);
 
-        log(toolbar, fab, hello, size, color, text, bool, strs, ints);
+        log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
     }
 }
 ```
 
 ### Example
 ``` java
+@AutoRequestFullScreen(viewToTriggerRestore = R.id.hello)
+@AutoRequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.CALL_PHONE})
 public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
 
-    @AutoFound(id = R.id.toolbar, type = Type.View)
+    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.View)
     Toolbar toolbar;
 
     @AutoFound(id = R.id.fab)
-    @OnClick(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
+    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
     @AutoFound(id = R.id.hello)
     @OnClick(listener = "mokeListener")
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = Type.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = Type.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = Type.String)
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = Type.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = Type.StringArray)
+    @AutoFound(id = R.array.strs, type = AutoFound.Type.StringArray)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = Type.IntArray)
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.IntArray)
     int[] ints;
+
+    @AutoFound
+    PowerManager pm;
+
+    @AutoFound
+    TelephonyManager tm;
+
+    @AutoFound
+    NotificationManager nm;
+
+    @AutoFound
+    AccountManager accountManager;
+
+    @AutoFound
+    ActivityManager am;
 
     @AutoFound
     AlarmManager alarmManager;
 
-    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this")
+    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+            , autoUnbind = true)
     IMyAidlInterface mService;
 
-    private View.OnClickListener mokeListener = new View.OnClickListener() {
+    @AutoRegister(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+            , autoUnRegister = true)
+    BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
-        public void onClick(View v) {
-            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Scalpel.Demo", "onReceive, intent = " + intent.getAction());
         }
     };
 
-    @SuppressLint("SetTextI18n")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setSupportActionBar(toolbar);
+    @AutoFound(id = R.drawable.bitmap)
+    @AutoRecycle
+    Bitmap bitmap;
 
-        hello.setTextSize(size);
-        hello.setTextColor(color);
-        hello.setText(text + "-" + bool + "-" + Arrays.toString(strs) + "-" + Arrays.toString(ints));
-
-        new ViewHolder(this);
-    }
-
-    public void showSnack(String content, String owner) {
-        Snackbar.make(getWindow().getDecorView(), owner + ": " + content, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
-
-    @Override
-    public void onServiceBound(ComponentName name, ServiceConnection connection) {
-        mCallback.onServiceBound(name, connection);
-    }
+    @SystemService
+    IPowerManager powerManager;
 }
 ```

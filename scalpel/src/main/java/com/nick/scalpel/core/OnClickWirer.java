@@ -21,7 +21,6 @@ import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
@@ -92,7 +91,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
     private void autoWire(final Object o, Field field) {
 
-        if (debug) Log.d(logTag, "Auto wiring: " + field.getName());
+        logD("Auto wiring: " + field.getName());
 
         Object fieldObjectWired = ReflectionUtils.getField(field, o);
         if (fieldObjectWired == null) return;
@@ -128,7 +127,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
             view.setOnClickListener(onClickListener);
 
-            if (debug) Log.d(logTag, "OnClickWirer listener, Auto wired: " + field.getName());
+            logD("OnClickWirer listener, Auto wired: " + field.getName());
         } else if (!TextUtils.isEmpty(action)) {
             final String[] args = onClick.args();
             Class[] argClz = new Class[args.length];
@@ -146,7 +145,7 @@ public class OnClickWirer extends AbsFieldWirer {
                     ReflectionUtils.invokeMethod(finalActionMethod, o, args);
                 }
             });
-            if (debug) Log.d(logTag, "OnClickWirer actions, Auto wired: " + field.getName());
+            logD("OnClickWirer actions, Auto wired: " + field.getName());
         }
     }
 

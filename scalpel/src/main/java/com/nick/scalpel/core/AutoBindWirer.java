@@ -37,8 +37,11 @@ import java.lang.reflect.Method;
 
 public class AutoBindWirer extends AbsFieldWirer {
 
-    public AutoBindWirer(Configuration configuration) {
+    LifeCycleManager mLifeCycleManager;
+
+    public AutoBindWirer(Configuration configuration, LifeCycleManager manager) {
         super(configuration);
+        this.mLifeCycleManager = manager;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class AutoBindWirer extends AbsFieldWirer {
     }
 
     @Override
-    public void wire(Context context, final Object object, final Field field) {
+    public void wire(final Context context, final Object object, final Field field) {
         ReflectionUtils.makeAccessible(field);
         Object fieldObject = ReflectionUtils.getField(field, object);
         if (fieldObject != null) return;
@@ -79,6 +82,10 @@ public class AutoBindWirer extends AbsFieldWirer {
         boolean startService = autoBind.startService();
         boolean isExplicit = !TextUtils.isEmpty(action) && !TextUtils.isEmpty(pkg);
         Preconditions.checkState(isExplicit, "Action and PackageName should be specified");
+
+        boolean autoUnbind = autoBind.autoUnbind();
+        boolean isActivity = object instanceof Activity;
+        Preconditions.checkState(!autoUnbind || isActivity, "Auto unbind only work for activities.");
 
         AutoBind.Callback callbackInstance = null;
         if (!TextUtils.isEmpty(callback)) {
@@ -99,13 +106,13 @@ public class AutoBindWirer extends AbsFieldWirer {
             callbackInstance = (AutoBind.Callback) callbackObject;
         }
 
-        Intent intent = new Intent(action);
+        final Intent intent = new Intent(action);
         intent.setPackage(pkg);
 
         if (startService) context.startService(intent);
 
         final AutoBind.Callback finalCallbackInstance = callbackInstance;
-        ServiceConnection connection = new ServiceConnection() {
+        final ServiceConnection connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Class serviceClass = field.getType();
@@ -117,7 +124,7 @@ public class AutoBindWirer extends AbsFieldWirer {
                     ReflectionUtils.setField(field, object, result);
                     // Callback result.
                     if (finalCallbackInstance != null)
-                        finalCallbackInstance.onServiceBound(name, this);
+                        finalCallbackInstance.onServiceBound(name, this, intent);
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException(e);
                 }
@@ -131,6 +138,24 @@ public class AutoBindWirer extends AbsFieldWirer {
         };
         //noinspection ResourceType
         context.bindService(intent, connection, flags);
+
+        if (autoUnbind) {
+            final String fieldName = field.getName();
+            boolean registered = mLifeCycleManager.registerActivityLifecycleCallbacks(new LifeCycleCallbackAdapter() {
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    super.onActivityDestroyed(activity);
+                    if (activity == object) {
+                        logV("unBind service for: " + fieldName);
+                        context.unbindService(connection);
+                        mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
+                    }
+                }
+            });
+            if (!registered) {
+                logE("Failed to register life cycle callback!");
+            }
+        }
     }
 
     @Override

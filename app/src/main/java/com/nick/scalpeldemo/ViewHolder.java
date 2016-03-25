@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.nick.scalpel.Scalpel;
 import com.nick.scalpel.core.AutoFound;
 import com.nick.scalpel.core.OnClick;
-import com.nick.scalpel.core.AutoFoundType;
 
 public class ViewHolder {
     @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
@@ -48,22 +47,22 @@ public class ViewHolder {
     @AutoFound(id = R.id.hello)
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFoundType.Integer)
+    @AutoFound(id = R.integer.size, type = AutoFound.Type.INTEGER)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFoundType.Color)
+    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.COLOR)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFoundType.String)
+    @AutoFound(id = R.string.app_name, type = AutoFound.Type.STRING)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFoundType.Bool)
+    @AutoFound(id = R.bool.boo, type = AutoFound.Type.BOOL)
     boolean bool;
 
     @AutoFound(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFoundType.Auto)
+    @AutoFound(id = R.array.ints, type = AutoFound.Type.AUTO)
     int[] ints;
 
     @AutoFound
@@ -95,7 +94,6 @@ public class ViewHolder {
     ViewHolder(Context context) {
         View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
         Scalpel.getDefault().wire(rootV, this);
-        Scalpel.getDefault().wire(context, this);
 
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
     }

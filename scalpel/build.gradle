@@ -4,11 +4,11 @@ apply plugin: 'com.jfrog.bintray'
 
 
 
-def siteUrl = 'https://github.com/NickAndroid/Scalpel'    // project homepage
+def siteUrl = 'http://nickandroid.github.io/Scalpel/'    // project homepage
 def gitUrl = 'https://github.com/NickAndroid/Scalpel.git' // project git
 
 group = "com.nick.scalpel"
-version = "0.4"
+version = "1.0.1"
 
 android {
     compileSdkVersion 23
@@ -26,12 +26,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { aidl.srcDirs = ['src/main/aidl', 'src/main/aidl/'] } }
 }
 
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.chrisplus.rootmanager:library:2.0.4@aar'
 }
 
 install {
@@ -40,7 +42,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'Auto wired framework for Android'
+                name 'Enhanced auto injection framework for Android'
                 url siteUrl
                 licenses {
                     license {

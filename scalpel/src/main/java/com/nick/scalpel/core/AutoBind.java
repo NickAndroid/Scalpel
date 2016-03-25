@@ -18,6 +18,7 @@ package com.nick.scalpel.core;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 
 import java.lang.annotation.Documented;
@@ -42,8 +43,10 @@ public @interface AutoBind {
 
     boolean startService() default false;
 
+    boolean autoUnbind() default false;
+
     interface Callback {
-        void onServiceBound(ComponentName name, ServiceConnection connection);
+        void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent);
 
         void onServiceDisconnected(ComponentName name);
     }

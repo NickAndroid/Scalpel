@@ -17,11 +17,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-@NotTested
+@Beta
 public class AutoRegisterWirer extends AbsFieldWirer {
 
-    public AutoRegisterWirer(Configuration configuration) {
+    LifeCycleManager mLifeCycleManager;
+
+    public AutoRegisterWirer(Configuration configuration, LifeCycleManager manager) {
         super(configuration);
+        this.mLifeCycleManager = manager;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class AutoRegisterWirer extends AbsFieldWirer {
     }
 
     @Override
-    public void wire(Context context, Object object, Field field) {
+    public void wire(final Context context, final Object object, Field field) {
         ReflectionUtils.makeAccessible(field);
 
         Object fieldObject = ReflectionUtils.getField(field, object);
@@ -56,11 +59,15 @@ public class AutoRegisterWirer extends AbsFieldWirer {
 
         AutoRegister autoRegister = field.getAnnotation(AutoRegister.class);
         String[] actions = autoRegister.actions();
+        boolean autoUnRegister = autoRegister.autoUnRegister();
+
+        boolean isActivity = object instanceof Activity;
+        Preconditions.checkState(!autoUnRegister || isActivity, "Auto unregister only work for activities.");
 
         boolean hasAction = actions.length > 0 && !TextUtils.isEmpty(actions[0]);
         Preconditions.checkState(hasAction, "Invalid actions:" + Arrays.toString(actions));
 
-        BroadcastReceiver receiver = (BroadcastReceiver) fieldObject;
+        final BroadcastReceiver receiver = (BroadcastReceiver) fieldObject;
 
         IntentFilter filter = new IntentFilter();
         for (String action : actions) {
@@ -68,6 +75,24 @@ public class AutoRegisterWirer extends AbsFieldWirer {
         }
 
         context.registerReceiver(receiver, filter);
+
+        if (autoUnRegister) {
+            final String fieldName = field.getName();
+            boolean registered = mLifeCycleManager.registerActivityLifecycleCallbacks(new LifeCycleCallbackAdapter() {
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    super.onActivityDestroyed(activity);
+                    if (activity == object) {
+                        logV("UnRegister receiver for: " + fieldName);
+                        context.unregisterReceiver(receiver);
+                        mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
+                    }
+                }
+            });
+            if (!registered) {
+                logE("Failed to register life cycle callback!");
+            }
+        }
     }
 
     @Override
