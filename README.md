@@ -1,5 +1,5 @@
 # Scalpel
-A enhanced auto wire framework for Android
+Enhanced auto injection framework for Android
 
 ### Latest version
 [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
@@ -16,7 +16,7 @@ A enhanced auto wire framework for Android
 - System service, IPowerManager, etc(mainly used for System apps).
 - Auto require root.
 
-### Enhanced feature
+### Enhanced features
 - System interface hook, using system api without permission granted and root access(bringing up...).
 
 ### Usage
@@ -42,9 +42,12 @@ public class MyApplication extends Application {
 2. Use auto activity or wire things manually
 ``` java
 public class MainActivity extends ScalpelAutoActivity {}
-
+```
+``` java
 public class MyFragment extends ScalpelAutoFragment {}
-
+```
+``` java
+@AutoRequireRoot(mode = AutoRequireRoot.Mode.Async, callback = "this")
 public class MyService extends ScalpelAutoService {}
 ```
 
