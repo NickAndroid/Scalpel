@@ -1,3 +1,5 @@
+![Logo](art/logo.jpg)
+
 # Scalpel
 Enhanced auto injection framework for Android
 
