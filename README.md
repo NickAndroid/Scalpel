@@ -1,10 +1,10 @@
 # Scalpel
-Auto wired framework for Android
+A enhanced auto wire framework for Android
 
 ### Latest version
 [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
 
-### Features
+### General Features
 - Auto find views, int, String, bool, array...
 - OnClick listener, action, args.
 - Auto bind/unbind AIDL service.
@@ -15,6 +15,9 @@ Auto wired framework for Android
 - Auto recycle fields for Activity.
 - System service, IPowerManager, etc(mainly used for System apps).
 - Auto require root.
+
+### Enhanced feature
+- System interface hook, using system api without permission granted and root access(bringing up...).
 
 ### Usage
 

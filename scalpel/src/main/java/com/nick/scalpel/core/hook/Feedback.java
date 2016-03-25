@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nick.commands.sca;
+package com.nick.scalpel.core.hook;
 
 import java.util.StringTokenizer;
 

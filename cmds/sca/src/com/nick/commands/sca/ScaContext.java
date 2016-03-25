@@ -15,8 +15,13 @@
  */
 package com.nick.commands.sca;
 
-public interface Request {
-    int UNDEFINED = 0;
-    int START_SERVICE = 0x1;
-    int STOP_SERVICE = 0x2;
+import android.content.Context;
+
+public abstract class ScaContext extends Context {
+
+    public static final String SCA_SERVICE = "sca_power";
+
+    public static final String SCA_POWER_SERVICE = "sca_power";
+
+    public static final String SCA_TELEPHONY_SERVICE = "sca_phone";
 }

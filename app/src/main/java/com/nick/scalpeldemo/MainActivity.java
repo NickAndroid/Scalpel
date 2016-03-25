@@ -185,8 +185,6 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
 
         log(bitmap);
-        log(mService);
-
         log(powerManager);
         log(telephony);
     }

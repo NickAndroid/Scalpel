@@ -1,10 +1,29 @@
+/*
+ * Copyright (c) 2016 Nick Guo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nick.commands.sca;
 
 import android.os.IBinder;
+import android.os.IPowerManager;
+import android.os.PowerManagerProxy;
 import android.os.ServiceManager;
 import android.util.Slog;
 
 import com.android.internal.os.BaseCommand;
+import com.android.internal.telephony.ITelephony;
+import com.android.internal.telephony.TelephonyManagerProxy;
 
 import java.io.PrintStream;
 
@@ -47,11 +66,18 @@ public class Sca extends BaseCommand {
             return;
         }
 
-        ServiceManager.addService("sca", ScaService.get(), true);
+        ServiceManager.addService(ScaContext.SCA_SERVICE, ScaHookService.get(), true);
+        ServiceManager.addService(ScaContext.SCA_TELEPHONY_SERVICE, new TelephonyManagerProxy(), true);
+        ServiceManager.addService(ScaContext.SCA_POWER_SERVICE, new PowerManagerProxy().asBinder(), true);
+
         com.nick.commands.sca.IScaService me =
-                com.nick.commands.sca.IScaService.Stub.asInterface(ServiceManager.getService("sca"));
+                com.nick.commands.sca.IScaService.Stub.asInterface(ServiceManager.getService(ScaContext.SCA_SERVICE));
+        ITelephony telephony = ITelephony.Stub.asInterface(ServiceManager.getService(ScaContext.SCA_TELEPHONY_SERVICE));
+        IPowerManager power = IPowerManager.Stub.asInterface(ServiceManager.getService(ScaContext.SCA_POWER_SERVICE));
 
         log("Sca service:" + me);
+        log("Sca phone service:" + telephony);
+        log("Sca power service:" + power);
 
         if (me == null) {
             sent(new Feedback(Response.START_FAILURE_SYSTEM_ERR, "Sca server startup failure, have you installed?"));
@@ -82,7 +108,7 @@ public class Sca extends BaseCommand {
         log("sent:" + String.valueOf(content));
     }
 
-    static void log(Object content) {
+    public static void log(Object content) {
         Slog.d(TAG, String.valueOf(content));
     }
 
