@@ -41,7 +41,8 @@ import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
 import com.nick.scalpel.core.SystemServiceWirer;
-import com.nick.scalpel.core.os.DroidRootRequester;
+import com.nick.scalpel.core.hook.ScalpelServiceInstaller;
+import com.nick.scalpel.core.os.ChrisRootRequester;
 import com.nick.scalpel.core.os.DroidServiceManager;
 import com.nick.scalpel.core.os.ServiceManager;
 import com.nick.scalpel.core.utils.Preconditions;
@@ -56,6 +57,8 @@ import java.util.Set;
  * or create an instance manually.
  */
 public class Scalpel implements LifeCycleManager, HandlerSupplier {
+
+    static final String TAG = "Scalpel";
 
     private static Scalpel ourScalpel;
 
@@ -122,7 +125,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
         mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
         mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig, this));
-        mClassWirers.add(new AutoRequireRootWirer(usingConfig, new DroidRootRequester()));
+        mClassWirers.add(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));
         return this;
     }
 
@@ -216,6 +219,27 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
                 }
             }
         }
+    }
+
+    public boolean installScalpelHookService(final String jarPath, final String binPath) {
+        Preconditions.checkNotNull(jarPath, "jar path is null.");
+        Preconditions.checkNotNull(binPath, "bin path is null.");
+        try {
+            return new ScalpelServiceInstaller() {
+                @Override
+                protected String getBinaryPath() {
+                    return binPath;
+                }
+
+                @Override
+                protected String getJarPath() {
+                    return jarPath;
+                }
+            }.install();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to install hook service:" + Log.getStackTraceString(e));
+        }
+        return false;
     }
 
     private boolean isInScope(Scope given, Scope expected) {

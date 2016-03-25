@@ -31,10 +31,8 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IPowerManager;
 import android.os.PowerManager;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -46,7 +44,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.internal.telephony.ITelephony;
-import com.android.internal.telephony.ITelephonyListener;
 import com.nick.commands.sca.IScaService;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
@@ -187,48 +184,16 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
 
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
 
-        // getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commit();
-
         log(bitmap);
         log(mService);
 
         log(powerManager);
         log(telephony);
-
-        try {
-            telephony.setRadioPower(false);
-            telephony.addListener(new ITelephonyListener.Stub() {
-                @Override
-                public void onUpdate(int callId, int state, String number) throws RemoteException {
-                    log("onUpdate:" + number + ", state:" + state);
-                }
-            });
-        } catch (RemoteException e) {
-
-        } catch (SecurityException se) {
-            se.printStackTrace();
-        }
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                log(mService);
-            }
-        }, 3000);
-
-        log(scaService);
-
-        if (scaService != null) try {
-            scaService.run();
-            scaService.setRadioPower(false);
-        } catch (RemoteException e) {
-
-        }
     }
 
     void log(Object... os) {
         for (Object o : os) {
-            Log.d(getClass().getName(), String.valueOf(o));
+            Log.d(getClass().getName(), (o == null ? "null" : o.getClass().getSimpleName()) + "-" + String.valueOf(o));
         }
     }
 
@@ -250,12 +215,5 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @Override
     public void onRootResult(boolean hasRoot, @Nullable Shell shell) {
         log("onRootResult:" + hasRoot + ", shell = " + shell);
-        if (shell != null) shell.exec("sca", new Shell.FeedbackReceiver() {
-            @Override
-            public boolean onFeedback(String feedback) {
-                log("onFeedback:" + feedback);
-                return false;
-            }
-        });
     }
 }
