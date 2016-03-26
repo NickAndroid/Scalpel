@@ -127,6 +127,9 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @AutoRecycle
     Bitmap bitmap;
 
+    @Custom
+    Object custom;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

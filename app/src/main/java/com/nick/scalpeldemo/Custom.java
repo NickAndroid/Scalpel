@@ -16,13 +16,15 @@
 
 package com.nick.scalpeldemo;
 
-import com.nick.scalpel.Scalpel;
-import com.nick.scalpel.ScalpelApplication;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public class MyApplication extends ScalpelApplication {
-    @Override
-    protected void onConfigScalpel(Scalpel scalpel) {
-        super.onConfigScalpel(scalpel);
-        scalpel.addFieldWirer(new CustomWirer());
-    }
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Target({FIELD})
+@Retention(RUNTIME)
+@Documented
+public @interface Custom {
 }

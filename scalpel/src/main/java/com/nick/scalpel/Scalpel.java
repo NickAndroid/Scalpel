@@ -103,17 +103,15 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         mConfiguration = usingConfig;
         mLogTag = usingConfig.getLogTag();
         AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
-        mFieldWirer.add(autoFoundWirer);
-        mFieldWirer.add(new OnClickWirer(autoFoundWirer, usingConfig));
-        mFieldWirer.add(new OnTouchWirer(autoFoundWirer, usingConfig));
-        mFieldWirer.add(new AutoBindWirer(usingConfig, this));
-        mFieldWirer.add(new AutoRegisterWirer(usingConfig, this));
-        mFieldWirer.add(new AutoRecycleWirer(usingConfig, this));
-
-        mClassWirer.add(new AutoRequestPermissionWirer(usingConfig));
-        mClassWirer.add(new AutoRequestFullScreenWirer(usingConfig, this));
-        mClassWirer.add(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));
-        return this;
+        return addFieldWirer(autoFoundWirer)
+                .addFieldWirer(new OnClickWirer(autoFoundWirer, usingConfig))
+                .addFieldWirer(new OnTouchWirer(autoFoundWirer, usingConfig))
+                .addFieldWirer(new AutoBindWirer(usingConfig, this))
+                .addFieldWirer(new AutoRegisterWirer(usingConfig, this))
+                .addFieldWirer(new AutoRecycleWirer(usingConfig, this))
+                .addClassWirer(new AutoRequestPermissionWirer(usingConfig))
+                .addClassWirer(new AutoRequestFullScreenWirer(usingConfig, this))
+                .addClassWirer(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));
     }
 
     public void wire(Activity activity) {
@@ -125,9 +123,11 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = activity.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirer) {
-                    if (field.isAnnotationPresent(wirer.annotationClass())) {
-                        wirer.wire(activity, field);
+                synchronized (mFieldWirer) {
+                    for (FieldWirer wirer : mFieldWirer) {
+                        if (field.isAnnotationPresent(wirer.annotationClass())) {
+                            wirer.wire(activity, field);
+                        }
                     }
                 }
             }
@@ -143,9 +143,11 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = service.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirer) {
-                    if (field.isAnnotationPresent(wirer.annotationClass())) {
-                        wirer.wire(service, field);
+                synchronized (mFieldWirer) {
+                    for (FieldWirer wirer : mFieldWirer) {
+                        if (field.isAnnotationPresent(wirer.annotationClass())) {
+                            wirer.wire(service, field);
+                        }
                     }
                 }
             }
@@ -161,9 +163,11 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = fragment.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirer) {
-                    if (field.isAnnotationPresent(wirer.annotationClass())) {
-                        wirer.wire(fragment, field);
+                synchronized (mFieldWirer) {
+                    for (FieldWirer wirer : mFieldWirer) {
+                        if (field.isAnnotationPresent(wirer.annotationClass())) {
+                            wirer.wire(fragment, field);
+                        }
                     }
                 }
             }
@@ -179,10 +183,12 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = target.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirer) {
-                    if (field.isAnnotationPresent(wirer.annotationClass())) {
-                        wirer.wire(context, target, field);
-                        break;
+                synchronized (mFieldWirer) {
+                    for (FieldWirer wirer : mFieldWirer) {
+                        if (field.isAnnotationPresent(wirer.annotationClass())) {
+                            wirer.wire(context, target, field);
+                            break;
+                        }
                     }
                 }
             }
@@ -198,10 +204,12 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = target.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirer) {
-                    if (field.isAnnotationPresent(wirer.annotationClass())) {
-                        wirer.wire(rootView, target, field);
-                        break;
+                synchronized (mFieldWirer) {
+                    for (FieldWirer wirer : mFieldWirer) {
+                        if (field.isAnnotationPresent(wirer.annotationClass())) {
+                            wirer.wire(rootView, target, field);
+                            break;
+                        }
                     }
                 }
             }
@@ -224,9 +232,11 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
     private void wireClz(Object o) {
         Class clz = o.getClass();
-        for (ClassWirer clzWirer : mClassWirer) {
-            if (clz.isAnnotationPresent(clzWirer.annotationClass())) {
-                clzWirer.wire(o);
+        synchronized (mClassWirer) {
+            for (ClassWirer clzWirer : mClassWirer) {
+                if (clz.isAnnotationPresent(clzWirer.annotationClass())) {
+                    clzWirer.wire(o);
+                }
             }
         }
     }
@@ -257,5 +267,21 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
     @Override
     public Handler getHandler() {
         return mHandler;
+    }
+
+    public Scalpel addFieldWirer(@NonNull FieldWirer wirer) {
+        Preconditions.checkNotNull(wirer);
+        synchronized (mFieldWirer) {
+            mFieldWirer.add(wirer);
+        }
+        return this;
+    }
+
+    public Scalpel addClassWirer(@NonNull ClassWirer wirer) {
+        Preconditions.checkNotNull(wirer);
+        synchronized (mClassWirer) {
+            mClassWirer.add(wirer);
+        }
+        return this;
     }
 }

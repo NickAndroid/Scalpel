@@ -26,12 +26,17 @@ public class ScalpelApplication extends Application {
     @CallSuper
     public void onCreate() {
         super.onCreate();
-        Scalpel.getDefault()
+        Scalpel scalpel = Scalpel.getDefault()
                 .application(this)
                 .config(Configuration.builder()
                         .autoFindIfNull(true)
                         .debug(true)
                         .logTag(getClass().getSimpleName())
                         .build());
+        onConfigScalpel(scalpel);
+    }
+
+    protected void onConfigScalpel(Scalpel scalpel) {
+
     }
 }
