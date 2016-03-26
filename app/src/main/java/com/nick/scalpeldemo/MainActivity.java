@@ -31,7 +31,6 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IPowerManager;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -43,8 +42,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.internal.telephony.ITelephony;
-import com.nick.commands.sca.IScaService;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.core.AutoBind;
 import com.nick.scalpel.core.AutoFound;
@@ -55,7 +52,6 @@ import com.nick.scalpel.core.AutoRequirePermission;
 import com.nick.scalpel.core.AutoRequireRoot;
 import com.nick.scalpel.core.OnClick;
 import com.nick.scalpel.core.OnTouch;
-import com.nick.scalpel.core.SystemService;
 import com.nick.scalpel.core.os.Shell;
 
 import java.util.Arrays;
@@ -131,15 +127,6 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @AutoRecycle
     Bitmap bitmap;
 
-    @SystemService
-    IPowerManager powerManager;
-
-    @SystemService
-    ITelephony telephony;
-
-    @SystemService
-    IScaService scaService;
-
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -183,10 +170,6 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         new ViewHolder(this);
 
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
-
-        log(bitmap);
-        log(powerManager);
-        log(telephony);
     }
 
     void log(Object... os) {

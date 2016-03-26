@@ -18,65 +18,22 @@ package com.nick.scalpeldemo;
 
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.IPowerManager;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.android.internal.telephony.ITelephony;
-import com.nick.commands.sca.IScaService;
 import com.nick.scalpel.ScalpelAutoService;
-import com.nick.scalpel.core.AutoFound;
-import com.nick.scalpel.core.SystemService;
 
 public class MyService extends ScalpelAutoService {
 
-    @AutoFound
-    PowerManager pm;
-    @SystemService
-    IScaService scaService;
-
-    @SystemService
-    ITelephony telephony;
-
-    @SystemService
-    IPowerManager manager;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("Scalpel.MyService", "pm = " + pm);
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("Scalpel.MyService", "pm = " + pm);
         sendBroadcast(new Intent("com.nick.service.bind"));
-
-        if (scaService != null) try {
-            scaService.run();
-        } catch (RemoteException ignored) {
-
-        }
-
-        if (telephony != null) {
-            try {
-                telephony.setRadio(!telephony.isRadioOn());
-            } catch (RemoteException ignored) {
-
-            }
-        }
-
-        if (manager != null) {
-            try {
-                manager.setPowerSaveMode(true);
-            } catch (RemoteException ignored) {
-
-            }
-        }
-
         return new MyStub();
     }
 

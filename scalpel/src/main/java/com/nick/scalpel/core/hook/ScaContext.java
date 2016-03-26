@@ -19,10 +19,5 @@ package com.nick.scalpel.core.hook;
 import android.content.Context;
 
 public abstract class ScaContext extends Context {
-
     public static final String SCA_SERVICE = "sca";
-
-    public static final String SCA_POWER_SERVICE = "sca_power";
-
-    public static final String SCA_TELEPHONY_SERVICE = "sca_phone";
 }

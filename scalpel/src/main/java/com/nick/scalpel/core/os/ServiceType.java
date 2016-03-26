@@ -16,19 +16,13 @@
 
 package com.nick.scalpel.core.os;
 
-import android.os.IPowerManager;
-
-import com.android.internal.telephony.ITelephony;
 import com.nick.commands.sca.IScaService;
 import com.nick.scalpel.core.hook.ScaContext;
 
 public enum ServiceType {
 
     AUTO(null, null),
-    SCA(ScaContext.SCA_SERVICE, IScaService.class),
-    POWER(ScaContext.SCA_POWER_SERVICE, IPowerManager.class),
-    TELEPHONY(ScaContext.SCA_TELEPHONY_SERVICE, ITelephony.class),
-    PACKAGE("package", null);
+    SCA(ScaContext.SCA_SERVICE, IScaService.class);
 
     public String name;
     public Class clz;

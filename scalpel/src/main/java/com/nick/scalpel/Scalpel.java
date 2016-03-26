@@ -221,6 +221,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         }
     }
 
+    @Deprecated
     public boolean installScalpelHookService(final String jarPath, final String binPath) {
         Preconditions.checkNotNull(jarPath, "jar path is null.");
         Preconditions.checkNotNull(binPath, "bin path is null.");
