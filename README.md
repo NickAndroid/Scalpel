@@ -18,9 +18,6 @@ Enhanced auto injection framework for Android
 - System service, IPowerManager, etc(mainly used for System apps).
 - Auto require root.
 
-### Enhanced features
-- System interface hook, using system api without permission granted and root access(bringing up...).
-
 ### Usage
 
 Add dependencies
@@ -189,8 +186,5 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @AutoFound(id = R.drawable.bitmap)
     @AutoRecycle
     Bitmap bitmap;
-
-    @SystemService
-    IPowerManager powerManager;
 }
 ```

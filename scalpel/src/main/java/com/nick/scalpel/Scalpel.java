@@ -40,11 +40,7 @@ import com.nick.scalpel.core.HandlerSupplier;
 import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.OnClickWirer;
 import com.nick.scalpel.core.OnTouchWirer;
-import com.nick.scalpel.core.SystemServiceWirer;
-import com.nick.scalpel.core.hook.ScalpelServiceInstaller;
 import com.nick.scalpel.core.os.ChrisRootRequester;
-import com.nick.scalpel.core.os.DroidServiceManager;
-import com.nick.scalpel.core.os.ServiceManager;
 import com.nick.scalpel.core.utils.Preconditions;
 
 import java.lang.reflect.Field;
@@ -58,12 +54,10 @@ import java.util.Set;
  */
 public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
-    static final String TAG = "Scalpel";
-
     private static Scalpel ourScalpel;
 
-    private final Set<FieldWirer> mFieldWirers;
-    private final Set<ClassWirer> mClassWirers;
+    private final Set<FieldWirer> mFieldWirer;
+    private final Set<ClassWirer> mClassWirer;
 
     private Application mApp;
     private Handler mHandler;
@@ -73,8 +67,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
     private String mLogTag;
 
     public Scalpel() {
-        mFieldWirers = new HashSet<>();
-        mClassWirers = new HashSet<>();
+        mFieldWirer = new HashSet<>();
+        mClassWirer = new HashSet<>();
         mHandler = new Handler();
     }
 
@@ -109,23 +103,16 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         mConfiguration = usingConfig;
         mLogTag = usingConfig.getLogTag();
         AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
-        mFieldWirers.add(autoFoundWirer);
-        mFieldWirers.add(new OnClickWirer(autoFoundWirer, usingConfig));
-        mFieldWirers.add(new OnTouchWirer(autoFoundWirer, usingConfig));
-        mFieldWirers.add(new AutoBindWirer(usingConfig, this));
-        mFieldWirers.add(new AutoRegisterWirer(usingConfig, this));
-        mFieldWirers.add(new AutoRecycleWirer(usingConfig, this));
+        mFieldWirer.add(autoFoundWirer);
+        mFieldWirer.add(new OnClickWirer(autoFoundWirer, usingConfig));
+        mFieldWirer.add(new OnTouchWirer(autoFoundWirer, usingConfig));
+        mFieldWirer.add(new AutoBindWirer(usingConfig, this));
+        mFieldWirer.add(new AutoRegisterWirer(usingConfig, this));
+        mFieldWirer.add(new AutoRecycleWirer(usingConfig, this));
 
-        try {
-            ServiceManager serviceManager = new DroidServiceManager();
-            mFieldWirers.add(new SystemServiceWirer(usingConfig, serviceManager));
-        } catch (Exception e) {
-            Log.e(usingConfig.getLogTag(), "Failed to init ServiceManager:" + Log.getStackTraceString(e));
-        }
-
-        mClassWirers.add(new AutoRequestPermissionWirer(usingConfig));
-        mClassWirers.add(new AutoRequestFullScreenWirer(usingConfig, this));
-        mClassWirers.add(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));
+        mClassWirer.add(new AutoRequestPermissionWirer(usingConfig));
+        mClassWirer.add(new AutoRequestFullScreenWirer(usingConfig, this));
+        mClassWirer.add(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));
         return this;
     }
 
@@ -138,7 +125,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = activity.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirers) {
+                for (FieldWirer wirer : mFieldWirer) {
                     if (field.isAnnotationPresent(wirer.annotationClass())) {
                         wirer.wire(activity, field);
                     }
@@ -156,7 +143,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = service.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirers) {
+                for (FieldWirer wirer : mFieldWirer) {
                     if (field.isAnnotationPresent(wirer.annotationClass())) {
                         wirer.wire(service, field);
                     }
@@ -174,7 +161,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = fragment.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirers) {
+                for (FieldWirer wirer : mFieldWirer) {
                     if (field.isAnnotationPresent(wirer.annotationClass())) {
                         wirer.wire(fragment, field);
                     }
@@ -192,7 +179,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = target.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirers) {
+                for (FieldWirer wirer : mFieldWirer) {
                     if (field.isAnnotationPresent(wirer.annotationClass())) {
                         wirer.wire(context, target, field);
                         break;
@@ -211,7 +198,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         if (isInScope(scope, Scope.Field)) {
             Class clz = target.getClass();
             for (Field field : clz.getDeclaredFields()) {
-                for (FieldWirer wirer : mFieldWirers) {
+                for (FieldWirer wirer : mFieldWirer) {
                     if (field.isAnnotationPresent(wirer.annotationClass())) {
                         wirer.wire(rootView, target, field);
                         break;
@@ -219,28 +206,6 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
                 }
             }
         }
-    }
-
-    @Deprecated
-    public boolean installScalpelHookService(final String jarPath, final String binPath) {
-        Preconditions.checkNotNull(jarPath, "jar path is null.");
-        Preconditions.checkNotNull(binPath, "bin path is null.");
-        try {
-            return new ScalpelServiceInstaller() {
-                @Override
-                protected String getBinaryPath() {
-                    return binPath;
-                }
-
-                @Override
-                protected String getJarPath() {
-                    return jarPath;
-                }
-            }.install();
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to install hook service:" + Log.getStackTraceString(e));
-        }
-        return false;
     }
 
     private boolean isInScope(Scope given, Scope expected) {
@@ -259,7 +224,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
     private void wireClz(Object o) {
         Class clz = o.getClass();
-        for (ClassWirer clzWirer : mClassWirers) {
+        for (ClassWirer clzWirer : mClassWirer) {
             if (clz.isAnnotationPresent(clzWirer.annotationClass())) {
                 clzWirer.wire(o);
             }
