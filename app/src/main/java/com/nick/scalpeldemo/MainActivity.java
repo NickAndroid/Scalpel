@@ -50,6 +50,7 @@ import com.nick.scalpel.core.binding.OnClick;
 import com.nick.scalpel.core.binding.OnTouch;
 import com.nick.scalpel.core.opt.AutoRecycle;
 import com.nick.scalpel.core.opt.Bean;
+import com.nick.scalpel.core.opt.RecyclerManager;
 import com.nick.scalpel.core.os.AutoRequireRoot;
 import com.nick.scalpel.core.os.Shell;
 import com.nick.scalpel.core.request.AutoRequestFullScreen;
@@ -143,6 +144,9 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @Bean(id = R.id.context_obj)
     ContextConsObject contextConsObjectStrict;
 
+    @Bean
+    RecyclerManager mRecyclerManager;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -214,5 +218,11 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @Override
     public void onRootResult(boolean hasRoot, @Nullable Shell shell) {
         log("onRootResult:" + hasRoot + ", shell = " + shell);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRecyclerManager.recycle(this);
     }
 }

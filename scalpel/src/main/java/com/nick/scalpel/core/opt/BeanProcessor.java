@@ -66,7 +66,8 @@ public class BeanProcessor extends AbsFieldWirer {
                             mBeanMap.put(item, bean);
                             // Find supers
                             // cacheForSuper(bean.getClass(), bean, item);
-                            cacheForInterface(bean.getClass(), bean, item);
+                            if (!bean.getClass().isAnnotationPresent(InterfaceIgnore.class))
+                                cacheForInterface(bean.getClass(), bean, item);
                         }
                     }
                 }
