@@ -16,21 +16,32 @@
 
 package com.nick.scalpel.core.os;
 
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 
-import com.nick.scalpel.core.opt.SharedExecutor;
+import com.nick.scalpel.core.os.Shell;
 
-public class AsyncShell extends Shell {
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    @Override
-    public boolean exec(final String command, final FeedbackReceiver receiver) {
-        if (TextUtils.isEmpty(command)) return false;
-        SharedExecutor.get().execute(new Runnable() {
-            @Override
-            public void run() {
-                AsyncShell.super.exec(command, receiver);
-            }
-        });
-        return true;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Target({TYPE})
+@Retention(RUNTIME)
+@Documented
+public @interface AutoRequireRoot {
+
+    Mode mode() default Mode.Sync;
+
+    String callback() default "";
+
+    enum Mode {
+        Sync,
+        Async
+    }
+
+    interface Callback {
+        void onRootResult(boolean hasRoot, @Nullable Shell shell);
     }
 }

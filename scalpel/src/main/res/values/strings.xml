@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Scalpel</string>
+    <string name="bean_name_space">Bean</string>
 </resources>

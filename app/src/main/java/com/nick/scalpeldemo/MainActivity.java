@@ -43,16 +43,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nick.scalpel.ScalpelAutoActivity;
-import com.nick.scalpel.core.AutoBind;
-import com.nick.scalpel.core.AutoFound;
-import com.nick.scalpel.core.AutoRecycle;
-import com.nick.scalpel.core.AutoRegister;
-import com.nick.scalpel.core.AutoRequestFullScreen;
-import com.nick.scalpel.core.AutoRequirePermission;
-import com.nick.scalpel.core.AutoRequireRoot;
-import com.nick.scalpel.core.OnClick;
-import com.nick.scalpel.core.OnTouch;
+import com.nick.scalpel.core.binding.AutoBind;
+import com.nick.scalpel.core.binding.AutoFound;
+import com.nick.scalpel.core.binding.AutoRegister;
+import com.nick.scalpel.core.binding.OnClick;
+import com.nick.scalpel.core.binding.OnTouch;
+import com.nick.scalpel.core.opt.AutoRecycle;
+import com.nick.scalpel.core.opt.Bean;
+import com.nick.scalpel.core.os.AutoRequireRoot;
 import com.nick.scalpel.core.os.Shell;
+import com.nick.scalpel.core.request.AutoRequestFullScreen;
+import com.nick.scalpel.core.request.AutoRequirePermission;
 
 import java.util.Arrays;
 
@@ -130,6 +131,18 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @Custom
     Object custom;
 
+    @Bean
+    EmptyConObject emptyConObject;
+
+    @Bean
+    ContextConsObject contextConsObject;
+
+    @Bean
+    ContextConsObject contextConsObject2;
+
+    @Bean(id = R.id.context_obj)
+    ContextConsObject contextConsObjectStrict;
+
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -173,6 +186,8 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         new ViewHolder(this);
 
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
+
+        log(emptyConObject, contextConsObject, contextConsObject2, contextConsObjectStrict);
     }
 
     void log(Object... os) {

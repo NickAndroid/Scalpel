@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,25 @@ public abstract class ReflectionUtils {
             new HashMap<>(256);
 
     private static final Method[] NO_METHODS = {};
+
+
+    private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(8);
+    private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(8);
+
+    static {
+        primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
+        primitiveWrapperTypeMap.put(Byte.class, byte.class);
+        primitiveWrapperTypeMap.put(Character.class, char.class);
+        primitiveWrapperTypeMap.put(Double.class, double.class);
+        primitiveWrapperTypeMap.put(Float.class, float.class);
+        primitiveWrapperTypeMap.put(Integer.class, int.class);
+        primitiveWrapperTypeMap.put(Long.class, long.class);
+        primitiveWrapperTypeMap.put(Short.class, short.class);
+
+        for (Map.Entry<Class<?>, Class<?>> entry : primitiveWrapperTypeMap.entrySet()) {
+            primitiveTypeToWrapperMap.put(entry.getValue(), entry.getKey());
+        }
+    }
 
     public static Field findField(Object o, String name) {
         for (Field f : o.getClass().getDeclaredFields()) {
@@ -384,4 +404,86 @@ public abstract class ReflectionUtils {
         }
     }
 
+    /**
+     * Finds a constructoron the given type that matches the given constructor arguments.
+     *
+     * @param type                 must not be {@literal null}.
+     * @param constructorArguments must not be {@literal null}.
+     * @return a {@link Constructor} that is compatible with the given arguments or {@literal null} if none found.
+     */
+    public static Constructor<?> findConstructor(Class<?> type, Object... constructorArguments) {
+
+        Preconditions.checkNotNull(type, "Target type must not be null!");
+        Preconditions.checkNotNull(constructorArguments, "Constructor arguments must not be null!");
+
+        for (Constructor<?> candidate : type.getDeclaredConstructors()) {
+
+            Class<?>[] parameterTypes = candidate.getParameterTypes();
+
+            if (argumentsMatch(parameterTypes, constructorArguments)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean argumentsMatch(Class<?>[] parameterTypes, Object[] arguments) {
+
+        if (parameterTypes.length != arguments.length) {
+            return false;
+        }
+
+        int index = 0;
+
+        for (Class<?> argumentType : parameterTypes) {
+
+            Object argument = arguments[index];
+
+            // Reject nulls for primitives
+            if (argumentType.isPrimitive() && argument == null) {
+                return false;
+            }
+
+            // Type check if argument is not null
+            if (argument != null && !isAssignableValue(argumentType, argument)) {
+                return false;
+            }
+
+            index++;
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if the given type is assignable from the given value,
+     * assuming setting by reflection. Considers primitive wrapper classes
+     * as assignable to the corresponding primitive types.
+     *
+     * @param type  the target type
+     * @param value the value that should be assigned to the type
+     * @return if the type is assignable from the value
+     */
+    public static boolean isAssignableValue(Class<?> type, Object value) {
+        return (value != null ? isAssignable(type, value.getClass()) : !type.isPrimitive());
+    }
+
+    public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
+        if (lhsType.isAssignableFrom(rhsType)) {
+            return true;
+        }
+        if (lhsType.isPrimitive()) {
+            Class<?> resolvedPrimitive = primitiveWrapperTypeMap.get(rhsType);
+            if (lhsType == resolvedPrimitive) {
+                return true;
+            }
+        } else {
+            Class<?> resolvedWrapper = primitiveTypeToWrapperMap.get(rhsType);
+            if (resolvedWrapper != null && lhsType.isAssignableFrom(resolvedWrapper)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

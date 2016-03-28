@@ -18,25 +18,52 @@ package com.nick.scalpel;
 
 import android.app.Application;
 import android.support.annotation.CallSuper;
+import android.util.Log;
 
 import com.nick.scalpel.config.Configuration;
+import com.nick.scalpel.core.ClassWirer;
+import com.nick.scalpel.core.opt.ContextConfiguration;
+
+import java.lang.annotation.Annotation;
 
 public class ScalpelApplication extends Application {
+
+    private int mContextConfigurationRes = -1;
+
     @Override
     @CallSuper
     public void onCreate() {
         super.onCreate();
+        new ContextConfigurationProcessor().wire(this);
         Scalpel scalpel = Scalpel.getDefault()
                 .application(this)
                 .config(Configuration.builder()
                         .autoFindIfNull(true)
                         .debug(true)
+                        .beanContextRes(mContextConfigurationRes)
                         .logTag(getClass().getSimpleName())
                         .build());
         onConfigScalpel(scalpel);
     }
 
     protected void onConfigScalpel(Scalpel scalpel) {
+        // Noop.
+    }
 
+    private class ContextConfigurationProcessor implements ClassWirer {
+
+        @Override
+        public void wire(Object o) {
+            if (o instanceof ScalpelApplication) {
+                ContextConfiguration contextConfiguration = o.getClass().getAnnotation(ContextConfiguration.class);
+                ((ScalpelApplication) o).mContextConfigurationRes = (contextConfiguration.xmlRes());
+                Log.d(getClass().getSimpleName(), "Bring up app with context config res:" + contextConfiguration.xmlRes());
+            }
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationClass() {
+            return ContextConfiguration.class;
+        }
     }
 }

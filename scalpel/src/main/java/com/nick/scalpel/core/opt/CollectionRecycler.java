@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.core.os;
+package com.nick.scalpel.core.opt;
 
-import android.text.TextUtils;
+import android.support.annotation.NonNull;
 
-import com.nick.scalpel.core.opt.SharedExecutor;
+import com.nick.scalpel.core.utils.Preconditions;
 
-public class AsyncShell extends Shell {
+import java.util.Collection;
 
+public class CollectionRecycler implements Recycler<Collection> {
     @Override
-    public boolean exec(final String command, final FeedbackReceiver receiver) {
-        if (TextUtils.isEmpty(command)) return false;
-        SharedExecutor.get().execute(new Runnable() {
-            @Override
-            public void run() {
-                AsyncShell.super.exec(command, receiver);
-            }
-        });
-        return true;
+    public void recycle(@NonNull Collection collection) {
+        Preconditions.checkNotNull(collection);
+        collection.clear();
+        //noinspection ConstantConditions
+        collection = null;
     }
 }

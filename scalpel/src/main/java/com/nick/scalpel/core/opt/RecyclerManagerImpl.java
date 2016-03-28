@@ -14,23 +14,30 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.core.os;
+package com.nick.scalpel.core.opt;
 
-import android.text.TextUtils;
+import android.content.Context;
 
-import com.nick.scalpel.core.opt.SharedExecutor;
+import com.nick.scalpel.Scalpel;
 
-public class AsyncShell extends Shell {
+public class RecyclerManagerImpl implements RecyclerManager {
+
+    @Bean
+    BitmapRecycler mBmRecycler;
+    @Bean
+    BitmapRecycler mBmRecycler2;
+    @Bean
+    GeneralRecycler mGeneralRecycler;
+    @Bean
+    CollectionRecycler mCollectionRecycler;
+
+    public RecyclerManagerImpl(Scalpel scalpel, Context context) {
+        scalpel.wire(context, this);
+    }
 
     @Override
-    public boolean exec(final String command, final FeedbackReceiver receiver) {
-        if (TextUtils.isEmpty(command)) return false;
-        SharedExecutor.get().execute(new Runnable() {
-            @Override
-            public void run() {
-                AsyncShell.super.exec(command, receiver);
-            }
-        });
-        return true;
+    public void recycle() {
     }
+
+
 }

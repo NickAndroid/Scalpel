@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.core.os;
+package com.nick.scalpel.core.request;
 
-import android.text.TextUtils;
+import android.annotation.TargetApi;
+import android.os.Build;
 
-import com.nick.scalpel.core.opt.SharedExecutor;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public class AsyncShell extends Shell {
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-    @Override
-    public boolean exec(final String command, final FeedbackReceiver receiver) {
-        if (TextUtils.isEmpty(command)) return false;
-        SharedExecutor.get().execute(new Runnable() {
-            @Override
-            public void run() {
-                AsyncShell.super.exec(command, receiver);
-            }
-        });
-        return true;
-    }
+@Target({TYPE})
+@Retention(RUNTIME)
+@Documented
+@TargetApi(value = Build.VERSION_CODES.M)
+public @interface AutoRequirePermission {
+
+    String[] permissions() default {};
+
+    int requestCode() default DEFAULT_CODE;
+
+    int DEFAULT_CODE = 1000;
 }

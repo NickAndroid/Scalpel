@@ -28,13 +28,15 @@ public class Configuration {
     boolean debug;
     boolean autoFindIfNull;
     String logTag;
+    int beanContextRes;
 
     public static final Configuration DEFAULT = new Configuration();
 
-    private Configuration(boolean debug, boolean autoFindIfNull, String logTag) {
+    private Configuration(boolean debug, boolean autoFindIfNull, String logTag, int beanContextRes) {
         this.debug = debug;
         this.autoFindIfNull = autoFindIfNull;
         this.logTag = logTag;
+        this.beanContextRes = beanContextRes;
     }
 
     private Configuration() {
@@ -53,6 +55,10 @@ public class Configuration {
         return logTag;
     }
 
+    public int getBeanContextRes() {
+        return beanContextRes;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -66,6 +72,7 @@ public class Configuration {
         boolean debug;
         boolean autoFindIfNull;
         String logTag = "Scalpel";
+        int beanContextRes = -1;
 
         /**
          * Toggle the debug mode.
@@ -101,8 +108,13 @@ public class Configuration {
             return this;
         }
 
+        public Builder beanContextRes(int res) {
+            this.beanContextRes = res;
+            return this;
+        }
+
         public Configuration build() {
-            return new Configuration(debug, autoFindIfNull, logTag);
+            return new Configuration(debug, autoFindIfNull, logTag, beanContextRes);
         }
     }
 }

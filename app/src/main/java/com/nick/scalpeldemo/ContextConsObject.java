@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.core.os;
+package com.nick.scalpeldemo;
 
-import android.text.TextUtils;
+import android.content.Context;
 
-import com.nick.scalpel.core.opt.SharedExecutor;
+public class ContextConsObject {
+    Context context;
 
-public class AsyncShell extends Shell {
-
-    @Override
-    public boolean exec(final String command, final FeedbackReceiver receiver) {
-        if (TextUtils.isEmpty(command)) return false;
-        SharedExecutor.get().execute(new Runnable() {
-            @Override
-            public void run() {
-                AsyncShell.super.exec(command, receiver);
-            }
-        });
-        return true;
+    public ContextConsObject(Context context) {
+        this.context = context;
     }
 }

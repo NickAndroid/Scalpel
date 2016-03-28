@@ -15,7 +15,7 @@ Enhanced auto injection framework for Android
 - Auto require permission (for SDK above M).
 - Auto require full screen for Activity.
 - Auto recycle fields for Activity.
-- System service, IPowerManager, etc(mainly used for System apps).
+- Bean support.
 - Auto require root.
 
 ### Usage
@@ -29,11 +29,12 @@ dependencies {
 
 1. Configurations customize:
 ``` java
-public class MyApplication extends Application {
+@ContextConfiguration(xmlRes = R.xml.context_scalpel_demo)
+public class MyApplication extends ScalpelApplication {
     @Override
-    public void onCreate() {
-        super.onCreate();
-        Scalpel.getDefault().config(Configuration.builder().autoFindIfNull(true).debug(true).logTag("Scalpel").build());
+    protected void onConfigScalpel(Scalpel scalpel) {
+        super.onConfigScalpel(scalpel);
+        scalpel.addFieldWirer(new CustomWirer());
     }
 }
 ```
@@ -186,5 +187,14 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
     @AutoFound(id = R.drawable.bitmap)
     @AutoRecycle
     Bitmap bitmap;
+
+    @Bean
+    ContextConsObject contextConsObject;
+
+        @Bean
+    ContextConsObject contextConsObject2;
+
+    @Bean(id = R.id.context_obj)
+    ContextConsObject contextConsObjectStrict;
 }
 ```

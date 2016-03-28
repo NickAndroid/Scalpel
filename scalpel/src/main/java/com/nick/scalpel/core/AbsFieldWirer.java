@@ -34,6 +34,10 @@ public abstract class AbsFieldWirer implements FieldWirer {
                 : configuration.getLogTag() + LOG_TAG_CONNECTOR + getClass().getSimpleName();
     }
 
+    protected boolean debug() {
+        return debug;
+    }
+
     protected void logV(Object o) {
         if (debug) Log.v(logTag, String.valueOf(o));
     }

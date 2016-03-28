@@ -27,20 +27,21 @@ import android.util.Log;
 import android.view.View;
 
 import com.nick.scalpel.config.Configuration;
-import com.nick.scalpel.core.AutoBindWirer;
-import com.nick.scalpel.core.AutoFoundWirer;
-import com.nick.scalpel.core.AutoRecycleWirer;
-import com.nick.scalpel.core.AutoRegisterWirer;
-import com.nick.scalpel.core.AutoRequestFullScreenWirer;
-import com.nick.scalpel.core.AutoRequestPermissionWirer;
-import com.nick.scalpel.core.AutoRequireRootWirer;
 import com.nick.scalpel.core.ClassWirer;
 import com.nick.scalpel.core.FieldWirer;
 import com.nick.scalpel.core.HandlerSupplier;
-import com.nick.scalpel.core.LifeCycleManager;
-import com.nick.scalpel.core.OnClickWirer;
-import com.nick.scalpel.core.OnTouchWirer;
+import com.nick.scalpel.core.binding.AutoBindWirer;
+import com.nick.scalpel.core.binding.AutoFoundWirer;
+import com.nick.scalpel.core.binding.AutoRegisterWirer;
+import com.nick.scalpel.core.binding.OnClickWirer;
+import com.nick.scalpel.core.binding.OnTouchWirer;
+import com.nick.scalpel.core.opt.AutoRecycleWirer;
+import com.nick.scalpel.core.opt.BeanProcessor;
+import com.nick.scalpel.core.opt.LifeCycleManager;
+import com.nick.scalpel.core.os.AutoRequireRootWirer;
 import com.nick.scalpel.core.os.ChrisRootRequester;
+import com.nick.scalpel.core.request.AutoRequestFullScreenWirer;
+import com.nick.scalpel.core.request.AutoRequestPermissionWirer;
 import com.nick.scalpel.core.utils.Preconditions;
 
 import java.lang.reflect.Field;
@@ -109,6 +110,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
                 .addFieldWirer(new AutoBindWirer(usingConfig, this))
                 .addFieldWirer(new AutoRegisterWirer(usingConfig, this))
                 .addFieldWirer(new AutoRecycleWirer(usingConfig, this))
+                .addFieldWirer(new BeanProcessor(mApp, usingConfig, R.xml.context_scalpel_internal,
+                        usingConfig.getBeanContextRes()))
                 .addClassWirer(new AutoRequestPermissionWirer(usingConfig))
                 .addClassWirer(new AutoRequestFullScreenWirer(usingConfig, this))
                 .addClassWirer(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));

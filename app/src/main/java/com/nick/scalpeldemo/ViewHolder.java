@@ -32,8 +32,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nick.scalpel.Scalpel;
-import com.nick.scalpel.core.AutoFound;
-import com.nick.scalpel.core.OnClick;
+import com.nick.scalpel.core.binding.AutoFound;
+import com.nick.scalpel.core.binding.OnClick;
 
 public class ViewHolder {
     @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
