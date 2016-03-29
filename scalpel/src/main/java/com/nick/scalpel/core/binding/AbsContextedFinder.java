@@ -18,6 +18,7 @@ package com.nick.scalpel.core.binding;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -49,5 +50,10 @@ public abstract class AbsContextedFinder extends AbsFinder {
     @Override
     public void wire(View root, Object object, Field field) {
         wire(root.getContext(), object, field);
+    }
+
+    @Override
+    public void wire(Context context, Object object, Field field) {
+        // Noop.
     }
 }

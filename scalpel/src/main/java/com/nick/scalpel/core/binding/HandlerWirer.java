@@ -17,32 +17,38 @@
 package com.nick.scalpel.core.binding;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.nick.scalpel.config.Configuration;
-import com.nick.scalpel.core.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
 import static com.nick.scalpel.core.utils.ReflectionUtils.getField;
 import static com.nick.scalpel.core.utils.ReflectionUtils.makeAccessible;
+import static com.nick.scalpel.core.utils.ReflectionUtils.setField;
 
-abstract class AbsIdFinder extends AbsContextedFinder {
+abstract class HandlerWirer extends AbsContextedFinder {
 
-    public AbsIdFinder(Configuration configuration) {
+    public HandlerWirer(Configuration configuration) {
         super(configuration);
     }
 
-    protected abstract int getIdRes(Field field);
+    @NonNull
+    protected abstract Looper getLooper(Object object, Field field);
+
+    @Nullable
+    protected abstract Handler.Callback getCallback(Object object, Field field);
 
     @Override
-    public final void wire(Context context, Object object, Field field) {
+    public void wire(Context context, Object object, Field field) {
         makeAccessible(field);
         Object fieldObject = getField(field, object);
-        if (fieldObject != null && !ReflectionUtils.isBaseDataType(field.getType())) return;
-        int id = getIdRes(field);
-        if (id <= 0) invalidArg();
-        wireFromId(id, context, object, field);
-    }
+        if (fieldObject != null) return;
 
-    protected abstract void wireFromId(int id, Context context, Object object, Field field);
+        Handler handler = new Handler(getLooper(object, field), getCallback(object, field));
+        setField(field, object, handler);
+    }
 }

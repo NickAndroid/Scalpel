@@ -47,5 +47,7 @@ public class Bindings implements Publishable {
         new OnItemClickWirer(configuration).publish(scalpel);
         new OnTouchWirer(configuration).publish(scalpel);
         new RegisterReceiverWirer(configuration, scalpel.getLifeCycleManager()).publish(scalpel);
+        new MainThreadHandlerWirer(configuration).publish(scalpel);
+        new WorkThreadHandlerWirer(configuration).publish(scalpel);
     }
 }

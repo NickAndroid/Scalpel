@@ -60,6 +60,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
     private Configuration mConfiguration;
 
     private String mLogTag;
+    private boolean mDebug;
 
     private Scalpel(Application application) {
         mFieldWirer = new HashSet<>();
@@ -102,6 +103,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
         Configuration usingConfig = configuration == null ? Configuration.DEFAULT : configuration;
         mConfiguration = usingConfig;
         mLogTag = usingConfig.getLogTag();
+        mDebug = usingConfig.isDebug();
         Bindings.publishTo(this);
         Opts.publishTo(this);
         Hooks.publishTo(this);
@@ -120,6 +122,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
             for (Field field : clz.getDeclaredFields()) {
                 synchronized (mFieldWirer) {
                     for (FieldWirer wirer : mFieldWirer) {
+                        if (mDebug)
+                            Preconditions.checkNotNull(wirer.annotationClass(), "No annotation in:" + wirer);
                         if (field.isAnnotationPresent(wirer.annotationClass())) {
                             wirer.wire(activity, field);
                         }
@@ -140,6 +144,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
             for (Field field : clz.getDeclaredFields()) {
                 synchronized (mFieldWirer) {
                     for (FieldWirer wirer : mFieldWirer) {
+                        if (mDebug)
+                            Preconditions.checkNotNull(wirer.annotationClass(), "No annotation in:" + wirer);
                         if (field.isAnnotationPresent(wirer.annotationClass())) {
                             wirer.wire(service, field);
                         }
@@ -160,6 +166,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
             for (Field field : clz.getDeclaredFields()) {
                 synchronized (mFieldWirer) {
                     for (FieldWirer wirer : mFieldWirer) {
+                        if (mDebug)
+                            Preconditions.checkNotNull(wirer.annotationClass(), "No annotation in:" + wirer);
                         if (field.isAnnotationPresent(wirer.annotationClass())) {
                             wirer.wire(fragment, field);
                         }
@@ -180,6 +188,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
             for (Field field : clz.getDeclaredFields()) {
                 synchronized (mFieldWirer) {
                     for (FieldWirer wirer : mFieldWirer) {
+                        if (mDebug)
+                            Preconditions.checkNotNull(wirer.annotationClass(), "No annotation in:" + wirer);
                         if (field.isAnnotationPresent(wirer.annotationClass())) {
                             wirer.wire(context, target, field);
                             break;
@@ -201,6 +211,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
             for (Field field : clz.getDeclaredFields()) {
                 synchronized (mFieldWirer) {
                     for (FieldWirer wirer : mFieldWirer) {
+                        if (mDebug)
+                            Preconditions.checkNotNull(wirer.annotationClass(), "No annotation in:" + wirer);
                         if (field.isAnnotationPresent(wirer.annotationClass())) {
                             wirer.wire(rootView, target, field);
                             break;
@@ -229,6 +241,8 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
         Class clz = o.getClass();
         synchronized (mClassWirer) {
             for (ClassWirer clzWirer : mClassWirer) {
+                if (mDebug)
+                    Preconditions.checkNotNull(clzWirer.annotationClass(), "No annotation in:" + clzWirer);
                 if (clz.isAnnotationPresent(clzWirer.annotationClass())) {
                     clzWirer.wire(o);
                 }

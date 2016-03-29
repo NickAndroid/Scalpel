@@ -22,6 +22,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.nick.scalpel.annotation.binding.OnItemClick;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsFieldWirer;
 
@@ -36,7 +37,7 @@ public class OnItemClickWirer extends AbsFieldWirer {
 
     @Override
     public Class<? extends Annotation> annotationClass() {
-        return null;
+        return OnItemClick.class;
     }
 
     @Override

@@ -204,8 +204,6 @@ public class MainActivity extends ScalpelAutoActivity implements BindService.Cal
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
 
         log(emptyConObject, contextConsObject, contextConsObject2, contextConsObjectStrict);
-
-
     }
 
     void log(Object... os) {

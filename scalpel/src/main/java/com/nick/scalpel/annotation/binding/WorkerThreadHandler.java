@@ -16,11 +16,6 @@
 
 package com.nick.scalpel.annotation.binding;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -31,23 +26,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD})
 @Retention(RUNTIME)
 @Documented
-public @interface BindService {
+public @interface WorkerThreadHandler {
+    String threadName() default "WorkThread";
 
-    String action();
-
-    String pkg();
-
-    int flags() default Context.BIND_AUTO_CREATE;
+    int priority() default android.os.Process.THREAD_PRIORITY_DEFAULT;
 
     String callback() default "";
-
-    boolean startService() default false;
-
-    boolean autoUnbind() default false;
-
-    interface Callback {
-        void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent);
-
-        void onServiceDisconnected(ComponentName name);
-    }
 }

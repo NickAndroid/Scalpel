@@ -36,10 +36,6 @@ class AutoRecycleWirer extends AbsOptWirer {
         this.mLifeCycleManager = manager;
     }
 
-    public AutoRecycleWirer(Configuration configuration) {
-        super(configuration);
-    }
-
     @Override
     public Class<? extends Annotation> annotationClass() {
         return AutoRecycle.class;

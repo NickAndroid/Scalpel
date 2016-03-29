@@ -34,7 +34,7 @@ public class Opts implements Publishable {
     @Override
     public void publish(Scalpel scalpel) {
         Configuration configuration = scalpel.getConfiguration();
-        new AutoRecycleWirer(configuration).publish(scalpel);
+        new AutoRecycleWirer(configuration, scalpel.getLifeCycleManager()).publish(scalpel);
         new BeanFactory(scalpel.getApp(), configuration,
                 R.xml.context_scalpel_internal, configuration.getBeanContextRes()).publish(scalpel);
     }

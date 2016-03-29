@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-package com.nick.scalpel.annotation.binding;
+package com.nick.scalpel.core.binding;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-@Target({FIELD})
-@Retention(RUNTIME)
-@Documented
-public @interface FindView {
-    int id();
+public interface ThisThatNull {
+    String THIS = "this";
+    String NULL = "null";
 }

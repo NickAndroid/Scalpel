@@ -21,12 +21,13 @@ import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.PowerManager;
 import android.os.storage.StorageManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
@@ -38,6 +39,7 @@ import android.widget.TextView;
 import com.nick.scalpel.Scalpel;
 import com.nick.scalpel.annotation.binding.AutoWired;
 import com.nick.scalpel.annotation.binding.BindService;
+import com.nick.scalpel.annotation.binding.BindService.Callback;
 import com.nick.scalpel.annotation.binding.FindBitmap;
 import com.nick.scalpel.annotation.binding.FindBool;
 import com.nick.scalpel.annotation.binding.FindColor;
@@ -47,18 +49,13 @@ import com.nick.scalpel.annotation.binding.FindString;
 import com.nick.scalpel.annotation.binding.FindStringArray;
 import com.nick.scalpel.annotation.binding.FindView;
 import com.nick.scalpel.annotation.binding.OnClick;
-import com.nick.scalpel.annotation.binding.OnTouch;
 import com.nick.scalpel.annotation.binding.RegisterReceiver;
 import com.nick.scalpel.annotation.opt.RetrieveBean;
 import com.nick.scalpel.core.opt.RecyclerManager;
 
-public class ViewHolder {
+public class ViewHolder implements Callback{
     @FindView(id = R.id.toolbar)
     Toolbar toolbar;
-
-    @FindView(id = R.id.fab)
-    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
-    FloatingActionButton fab;
 
     @FindView(id = R.id.hello)
     @OnClick(listener = "mokeListener")
@@ -149,12 +146,22 @@ public class ViewHolder {
         View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
         Scalpel.getInstance().wire(rootV, this);
 
-        log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
+        log(toolbar, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
     }
 
     void log(Object... os) {
         for (Object o : os) {
             Log.d(getClass().getSimpleName(), o.toString());
         }
+    }
+
+    @Override
+    public void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent) {
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+
     }
 }
