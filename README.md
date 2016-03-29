@@ -23,7 +23,7 @@ Enhanced auto injection framework for Android
 Add dependencies
 ``` java
 dependencies {
-    compile 'com.nick.scalpel:scalpel:0.8'
+    compile 'com.nick.scalpel:scalpel:1.0.3'
 }
 ```
 
@@ -53,68 +53,89 @@ public class MyService extends ScalpelAutoService {}
 
 ``` java
 public class ViewHolder {
-    @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
-            Toolbar toolbar;
+    @FindView(id = R.id.toolbar)
+    Toolbar toolbar;
 
-    @AutoFound(id = R.id.fab)
-    @OnClick(listener = "mokeListener")
+    @FindView(id = R.id.fab)
+    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
+    @FindView(id = R.id.hello)
     @OnClick(listener = "mokeListener")
-    @AutoFound(id = R.id.hello)
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
+    @FindInt(id = R.integer.size)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
+    @FindColor(id = R.color.colorAccent)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
+    @FindString(id = R.string.app_name)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
+    @FindBool(id = R.bool.boo)
     boolean bool;
 
-    @AutoFound(id = R.array.strs)
+    @FindStringArray(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.Auto)
+    @FindIntArray(id = R.array.ints)
     int[] ints;
 
-    @AutoFound
+    @AutoWired
     PowerManager pm;
 
-    @AutoFound
+    @AutoWired
     TelephonyManager tm;
 
-    @AutoFound
+    @AutoWired
     NotificationManager nm;
 
-    @AutoFound
+    @AutoWired
     AccountManager accountManager;
 
-    @AutoFound
+    @AutoWired
     ActivityManager am;
 
-    @AutoFound
+    @AutoWired
     AlarmManager alarmManager;
 
-    private View.OnClickListener mokeListener = new View.OnClickListener() {
+    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+            , autoUnbind = false)
+    IMyAidlInterface mService;
+
+    @RegisterReceiver(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+            , autoUnRegister = false)
+    BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
-        public void onClick(View v) {
-            Snackbar.make(v, "Replace with your own actions", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Scalpel.Demo", "onReceive, intent = " + intent.getAction());
         }
     };
 
-    ViewHolder(Context context) {
-        View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
-        Scalpel.getDefault().wire(rootV, this);
+    @FindBitmap(idRes = R.drawable.bitmap)
+    Bitmap bitmap;
 
-        log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
-    }
-}
+    @Custom
+    Object custom;
+
+    @RetrieveBean
+    EmptyConObject emptyConObject;
+
+    @RetrieveBean
+    ContextConsObject contextConsObject;
+
+    @RetrieveBean
+    ContextConsObject contextConsObject2;
+
+    @RetrieveBean(id = R.id.context_obj)
+    ContextConsObject contextConsObjectStrict;
+
+    @RetrieveBean
+    RecyclerManager mRecyclerManager;
+
+    @AutoWired
+    StorageManager sManager;
 ```
 
 ### Example
@@ -123,59 +144,11 @@ public class ViewHolder {
 @AutoRequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.CALL_PHONE})
 public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback {
-
-    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.View)
-    Toolbar toolbar;
-
-    @AutoFound(id = R.id.fab)
-    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
-    FloatingActionButton fab;
-
-    @AutoFound(id = R.id.hello)
-    @OnClick(listener = "mokeListener")
-    TextView hello;
-
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.Integer)
-    int size;
-
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.Color)
-    int color;
-
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.String)
-    String text;
-
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.Bool)
-    boolean bool;
-
-    @AutoFound(id = R.array.strs, type = AutoFound.Type.StringArray)
-    String[] strs;
-
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.IntArray)
-    int[] ints;
-
-    @AutoFound
-    PowerManager pm;
-
-    @AutoFound
-    TelephonyManager tm;
-
-    @AutoFound
-    NotificationManager nm;
-
-    @AutoFound
-    AccountManager accountManager;
-
-    @AutoFound
-    ActivityManager am;
-
-    @AutoFound
-    AlarmManager alarmManager;
-
-    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
             , autoUnbind = true)
     IMyAidlInterface mService;
 
-    @AutoRegister(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+    @RegisterReceiver(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
             , autoUnRegister = true)
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -184,17 +157,8 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         }
     };
 
-    @AutoFound(id = R.drawable.bitmap)
+    @FindBitmap(idRes = R.drawable.bitmap)
     @AutoRecycle
     Bitmap bitmap;
-
-    @Bean
-    ContextConsObject contextConsObject;
-
-        @Bean
-    ContextConsObject contextConsObject2;
-
-    @Bean(id = R.id.context_obj)
-    ContextConsObject contextConsObjectStrict;
 }
 ```
