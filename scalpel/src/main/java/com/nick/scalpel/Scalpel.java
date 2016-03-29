@@ -30,18 +30,12 @@ import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.ClassWirer;
 import com.nick.scalpel.core.FieldWirer;
 import com.nick.scalpel.core.HandlerSupplier;
-import com.nick.scalpel.core.binding.AutoBindWirer;
-import com.nick.scalpel.core.binding.AutoFoundWirer;
-import com.nick.scalpel.core.binding.AutoRegisterWirer;
-import com.nick.scalpel.core.binding.OnClickWirer;
-import com.nick.scalpel.core.binding.OnTouchWirer;
-import com.nick.scalpel.core.opt.AutoRecycleWirer;
-import com.nick.scalpel.core.opt.BeanProcessor;
-import com.nick.scalpel.core.opt.LifeCycleManager;
-import com.nick.scalpel.core.os.AutoRequireRootWirer;
-import com.nick.scalpel.core.os.ChrisRootRequester;
-import com.nick.scalpel.core.request.AutoRequestFullScreenWirer;
-import com.nick.scalpel.core.request.AutoRequestPermissionWirer;
+import com.nick.scalpel.core.LifeCycleManager;
+import com.nick.scalpel.core.binding.Bindings;
+import com.nick.scalpel.core.hook.Hooks;
+import com.nick.scalpel.core.opt.Opts;
+import com.nick.scalpel.core.opt.Recyclable;
+import com.nick.scalpel.core.request.Requests;
 import com.nick.scalpel.core.utils.Preconditions;
 
 import java.lang.reflect.Field;
@@ -50,10 +44,10 @@ import java.util.Set;
 
 /**
  * Api class for Scalpel project.
- * To get the instance of Scalpel you can use {@link #getDefault()}
+ * To get the instance of Scalpel you can use {@link #getInstance()}
  * or create an instance manually.
  */
-public class Scalpel implements LifeCycleManager, HandlerSupplier {
+public class Scalpel implements LifeCycleManager, HandlerSupplier, Recyclable {
 
     private static Scalpel ourScalpel;
 
@@ -67,10 +61,11 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
 
     private String mLogTag;
 
-    public Scalpel() {
+    private Scalpel(Application application) {
         mFieldWirer = new HashSet<>();
         mClassWirer = new HashSet<>();
         mHandler = new Handler();
+        mApp = application;
     }
 
     /**
@@ -78,8 +73,7 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
      *
      * @return The default instance of {@link Scalpel}
      */
-    public synchronized static Scalpel getDefault() {
-        if (ourScalpel == null) ourScalpel = new Scalpel();
+    public static Scalpel getInstance() {
         return ourScalpel;
     }
 
@@ -90,9 +84,14 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
      * @return The instance of {@link Scalpel}
      * @see Application
      */
-    public Scalpel application(Application application) {
-        this.mApp = application;
-        return this;
+    public static Scalpel create(Application application) {
+        Preconditions.checkNotNull(application);
+        ourScalpel = new Scalpel(application);
+        return ourScalpel;
+    }
+
+    public Application getApp() {
+        return mApp;
     }
 
     public Configuration getConfiguration() {
@@ -103,18 +102,11 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         Configuration usingConfig = configuration == null ? Configuration.DEFAULT : configuration;
         mConfiguration = usingConfig;
         mLogTag = usingConfig.getLogTag();
-        AutoFoundWirer autoFoundWirer = new AutoFoundWirer(usingConfig);
-        return addFieldWirer(autoFoundWirer)
-                .addFieldWirer(new OnClickWirer(autoFoundWirer, usingConfig))
-                .addFieldWirer(new OnTouchWirer(autoFoundWirer, usingConfig))
-                .addFieldWirer(new AutoBindWirer(usingConfig, this))
-                .addFieldWirer(new AutoRegisterWirer(usingConfig, this))
-                .addFieldWirer(new AutoRecycleWirer(usingConfig, this))
-                .addFieldWirer(new BeanProcessor(mApp, usingConfig, R.xml.context_scalpel_internal,
-                        usingConfig.getBeanContextRes()))
-                .addClassWirer(new AutoRequestPermissionWirer(usingConfig))
-                .addClassWirer(new AutoRequestFullScreenWirer(usingConfig, this))
-                .addClassWirer(new AutoRequireRootWirer(usingConfig, new ChrisRootRequester()));
+        Bindings.publishTo(this);
+        Opts.publishTo(this);
+        Hooks.publishTo(this);
+        Requests.publishTo(this);
+        return this;
     }
 
     public void wire(Activity activity) {
@@ -244,6 +236,10 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
         }
     }
 
+    public LifeCycleManager getLifeCycleManager() {
+        return this;
+    }
+
     @Override
     public boolean registerActivityLifecycleCallbacks(Application.ActivityLifecycleCallbacks callback) {
         if (mApp != null) {
@@ -286,5 +282,15 @@ public class Scalpel implements LifeCycleManager, HandlerSupplier {
             mClassWirer.add(wirer);
         }
         return this;
+    }
+
+    @Override
+    public void recycle() {
+        mClassWirer.clear();
+        mFieldWirer.clear();
+        mConfiguration = null;
+        mHandler = null;
+        mApp = null;
+        mLogTag = null;
     }
 }

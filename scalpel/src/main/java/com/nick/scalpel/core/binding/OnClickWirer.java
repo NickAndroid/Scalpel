@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.nick.scalpel.annotation.binding.OnClick;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsFieldWirer;
 import com.nick.scalpel.core.utils.ReflectionUtils;
@@ -32,13 +33,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class OnClickWirer extends AbsFieldWirer {
+class OnClickWirer extends AbsFieldWirer {
 
-    private AutoFoundWirer mAutoFoundWirer;
+    private ViewFinder mAutoFinder;
 
-    public OnClickWirer(AutoFoundWirer wirer, Configuration configuration) {
+    public OnClickWirer(Configuration configuration) {
         super(configuration);
-        this.mAutoFoundWirer = wirer;
+        this.mAutoFinder = new ViewFinder(configuration);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, activity);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(activity, field);
+            mAutoFinder.wire(activity, field);
         }
         autoWire(activity, field);
     }
@@ -63,7 +64,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, fragment);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(fragment, field);
+            mAutoFinder.wire(fragment, field);
         }
         autoWire(fragment, field);
     }
@@ -74,7 +75,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, service);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(service, field);
+            mAutoFinder.wire(service, field);
         }
         autoWire(service, field);
     }
@@ -85,7 +86,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, object);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(context, object, field);
+            mAutoFinder.wire(context, object, field);
         }
         autoWire(object, field);
     }
@@ -156,7 +157,7 @@ public class OnClickWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, object);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(root, object, field);
+            mAutoFinder.wire(root, object, field);
         }
 
         autoWire(object, field);

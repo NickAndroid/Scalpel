@@ -20,8 +20,12 @@ import android.accounts.AccountManager;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.PowerManager;
+import android.os.storage.StorageManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -32,56 +36,106 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nick.scalpel.Scalpel;
-import com.nick.scalpel.core.binding.AutoFound;
-import com.nick.scalpel.core.binding.OnClick;
+import com.nick.scalpel.annotation.binding.AutoWired;
+import com.nick.scalpel.annotation.binding.BindService;
+import com.nick.scalpel.annotation.binding.FindBitmap;
+import com.nick.scalpel.annotation.binding.FindBool;
+import com.nick.scalpel.annotation.binding.FindColor;
+import com.nick.scalpel.annotation.binding.FindInt;
+import com.nick.scalpel.annotation.binding.FindIntArray;
+import com.nick.scalpel.annotation.binding.FindString;
+import com.nick.scalpel.annotation.binding.FindStringArray;
+import com.nick.scalpel.annotation.binding.FindView;
+import com.nick.scalpel.annotation.binding.OnClick;
+import com.nick.scalpel.annotation.binding.OnTouch;
+import com.nick.scalpel.annotation.binding.RegisterReceiver;
+import com.nick.scalpel.annotation.opt.RetrieveBean;
+import com.nick.scalpel.core.opt.RecyclerManager;
 
 public class ViewHolder {
-    @AutoFound(id = R.id.toolbar) // Same as @AutoFound(id = R.id.toolbar, type = Type.Auto)
-            Toolbar toolbar;
+    @FindView(id = R.id.toolbar)
+    Toolbar toolbar;
 
-    @AutoFound(id = R.id.fab)
-    @OnClick(listener = "mokeListener")
+    @FindView(id = R.id.fab)
+    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
+    @FindView(id = R.id.hello)
     @OnClick(listener = "mokeListener")
-    @AutoFound(id = R.id.hello)
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.INTEGER)
+    @FindInt(id = R.integer.size)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.COLOR)
+    @FindColor(id = R.color.colorAccent)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.STRING)
+    @FindString(id = R.string.app_name)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.BOOL)
+    @FindBool(id = R.bool.boo)
     boolean bool;
 
-    @AutoFound(id = R.array.strs)
+    @FindStringArray(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.AUTO)
+    @FindIntArray(id = R.array.ints)
     int[] ints;
 
-    @AutoFound
+    @AutoWired
     PowerManager pm;
 
-    @AutoFound
+    @AutoWired
     TelephonyManager tm;
 
-    @AutoFound
+    @AutoWired
     NotificationManager nm;
 
-    @AutoFound
+    @AutoWired
     AccountManager accountManager;
 
-    @AutoFound
+    @AutoWired
     ActivityManager am;
 
-    @AutoFound
+    @AutoWired
     AlarmManager alarmManager;
+
+    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+            , autoUnbind = false)
+    IMyAidlInterface mService;
+
+    @RegisterReceiver(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+            , autoUnRegister = false)
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Scalpel.Demo", "onReceive, intent = " + intent.getAction());
+        }
+    };
+
+    @FindBitmap(idRes = R.drawable.bitmap)
+    Bitmap bitmap;
+
+    @Custom
+    Object custom;
+
+    @RetrieveBean
+    EmptyConObject emptyConObject;
+
+    @RetrieveBean
+    ContextConsObject contextConsObject;
+
+    @RetrieveBean
+    ContextConsObject contextConsObject2;
+
+    @RetrieveBean(id = R.id.context_obj)
+    ContextConsObject contextConsObjectStrict;
+
+    @RetrieveBean
+    RecyclerManager mRecyclerManager;
+
+    @AutoWired
+    StorageManager sManager;
 
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
@@ -93,7 +147,7 @@ public class ViewHolder {
 
     ViewHolder(Context context) {
         View rootV = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
-        Scalpel.getDefault().wire(rootV, this);
+        Scalpel.getInstance().wire(rootV, this);
 
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
     }

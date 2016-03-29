@@ -30,6 +30,6 @@ public class ScalpelAutoFragment extends Fragment {
     @CallSuper
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Scalpel.getDefault().wire(this);
+        Scalpel.getInstance().wire(this);
     }
 }

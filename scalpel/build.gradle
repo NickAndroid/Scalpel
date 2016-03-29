@@ -8,7 +8,7 @@ def siteUrl = 'http://nickandroid.github.io/Scalpel/'    // project homepage
 def gitUrl = 'https://github.com/NickAndroid/Scalpel.git' // project git
 
 group = "com.nick.scalpel"
-version = "1.0.2"
+version = "1.0.3"
 
 android {
     compileSdkVersion 23

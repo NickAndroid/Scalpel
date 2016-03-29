@@ -18,9 +18,10 @@ package com.nick.scalpel.core;
 
 import android.util.Log;
 
+import com.nick.scalpel.Scalpel;
 import com.nick.scalpel.config.Configuration;
 
-public abstract class AbsFieldWirer implements FieldWirer {
+public abstract class AbsFieldWirer implements FieldWirer, Publishable {
 
     static final String LOG_TAG_CONNECTOR = ".";
 
@@ -32,6 +33,11 @@ public abstract class AbsFieldWirer implements FieldWirer {
         this.logTag = configuration.getLogTag() == null
                 ? getClass().getSimpleName()
                 : configuration.getLogTag() + LOG_TAG_CONNECTOR + getClass().getSimpleName();
+    }
+
+    @Override
+    public void publish(Scalpel scalpel) {
+        scalpel.addFieldWirer(this);
     }
 
     protected boolean debug() {

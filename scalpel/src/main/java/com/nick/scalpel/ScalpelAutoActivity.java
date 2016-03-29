@@ -29,18 +29,18 @@ public class ScalpelAutoActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        Scalpel.getDefault().wire(this);
+        Scalpel.getInstance().wire(this);
     }
 
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
-        Scalpel.getDefault().wire(this);
+        Scalpel.getInstance().wire(this);
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
-        Scalpel.getDefault().wire(this);
+        Scalpel.getInstance().wire(this);
     }
 }

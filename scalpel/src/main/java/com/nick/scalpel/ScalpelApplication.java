@@ -20,9 +20,9 @@ import android.app.Application;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.nick.scalpel.annotation.opt.ContextConfiguration;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.ClassWirer;
-import com.nick.scalpel.core.opt.ContextConfiguration;
 
 import java.lang.annotation.Annotation;
 
@@ -35,8 +35,7 @@ public class ScalpelApplication extends Application {
     public void onCreate() {
         super.onCreate();
         new ContextConfigurationProcessor().wire(this);
-        Scalpel scalpel = Scalpel.getDefault()
-                .application(this)
+        Scalpel scalpel = Scalpel.create(this)
                 .config(Configuration.builder()
                         .autoFindIfNull(true)
                         .debug(true)

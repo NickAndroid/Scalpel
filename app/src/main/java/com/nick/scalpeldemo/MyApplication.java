@@ -18,7 +18,7 @@ package com.nick.scalpeldemo;
 
 import com.nick.scalpel.Scalpel;
 import com.nick.scalpel.ScalpelApplication;
-import com.nick.scalpel.core.opt.ContextConfiguration;
+import com.nick.scalpel.annotation.opt.ContextConfiguration;
 
 @ContextConfiguration(xmlRes = R.xml.context_scalpel_demo)
 public class MyApplication extends ScalpelApplication {

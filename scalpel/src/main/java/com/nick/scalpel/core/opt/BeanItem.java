@@ -18,9 +18,11 @@ package com.nick.scalpel.core.opt;
 
 import android.support.annotation.NonNull;
 
+import com.nick.scalpel.annotation.opt.RetrieveBean;
+
 public class BeanItem {
 
-    int id = Bean.DEFAULT_ID;
+    int id = RetrieveBean.DEFAULT_ID;
     String name;
     @NonNull
     String clz;

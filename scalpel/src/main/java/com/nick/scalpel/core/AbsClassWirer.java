@@ -18,9 +18,10 @@ package com.nick.scalpel.core;
 
 import android.util.Log;
 
+import com.nick.scalpel.Scalpel;
 import com.nick.scalpel.config.Configuration;
 
-public abstract class AbsClassWirer implements ClassWirer {
+public abstract class AbsClassWirer implements ClassWirer, Publishable {
     static final String LOG_TAG_CONNECTOR = ".";
 
     private boolean debug;
@@ -31,6 +32,11 @@ public abstract class AbsClassWirer implements ClassWirer {
         this.logTag = configuration.getLogTag() == null
                 ? getClass().getSimpleName()
                 : configuration.getLogTag() + LOG_TAG_CONNECTOR + getClass().getSimpleName();
+    }
+
+    @Override
+    public void publish(Scalpel scalpel) {
+        scalpel.addClassWirer(this);
     }
 
     protected void logV(Object o) {

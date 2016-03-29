@@ -17,19 +17,17 @@
 package com.nick.scalpel.core.opt;
 
 import android.app.Activity;
-import android.app.Service;
-import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.view.View;
 
+import com.nick.scalpel.annotation.opt.AutoRecycle;
 import com.nick.scalpel.config.Configuration;
-import com.nick.scalpel.core.AbsFieldWirer;
+import com.nick.scalpel.core.LifeCycleCallbackAdapter;
+import com.nick.scalpel.core.LifeCycleManager;
 import com.nick.scalpel.core.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public class AutoRecycleWirer extends AbsFieldWirer {
+class AutoRecycleWirer extends AbsOptWirer {
 
     LifeCycleManager mLifeCycleManager;
 
@@ -37,7 +35,6 @@ public class AutoRecycleWirer extends AbsFieldWirer {
         super(configuration);
         this.mLifeCycleManager = manager;
     }
-
 
     public AutoRecycleWirer(Configuration configuration) {
         super(configuration);
@@ -66,25 +63,5 @@ public class AutoRecycleWirer extends AbsFieldWirer {
         if (!registered) {
             logE("Failed to register life cycle callback!");
         }
-    }
-
-    @Override
-    public void wire(Fragment fragment, Field field) {
-        throw new UnsupportedOperationException("AutoRecycle is only supported in Activity.");
-    }
-
-    @Override
-    public void wire(Service service, Field field) {
-        throw new UnsupportedOperationException("AutoRecycle is only supported in Activity.");
-    }
-
-    @Override
-    public void wire(Context context, Object object, Field field) {
-        throw new UnsupportedOperationException("AutoRecycle is only supported in Activity.");
-    }
-
-    @Override
-    public void wire(View root, Object object, Field field) {
-        throw new UnsupportedOperationException("AutoRecycle is only supported in Activity.");
     }
 }

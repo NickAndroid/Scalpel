@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.storage.StorageManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,80 +44,88 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nick.scalpel.ScalpelAutoActivity;
-import com.nick.scalpel.core.binding.AutoBind;
-import com.nick.scalpel.core.binding.AutoFound;
-import com.nick.scalpel.core.binding.AutoRegister;
-import com.nick.scalpel.core.binding.OnClick;
-import com.nick.scalpel.core.binding.OnTouch;
-import com.nick.scalpel.core.opt.AutoRecycle;
-import com.nick.scalpel.core.opt.Bean;
+import com.nick.scalpel.annotation.binding.AutoWired;
+import com.nick.scalpel.annotation.binding.BindService;
+import com.nick.scalpel.annotation.binding.FindBitmap;
+import com.nick.scalpel.annotation.binding.FindBool;
+import com.nick.scalpel.annotation.binding.FindColor;
+import com.nick.scalpel.annotation.binding.FindInt;
+import com.nick.scalpel.annotation.binding.FindIntArray;
+import com.nick.scalpel.annotation.binding.FindString;
+import com.nick.scalpel.annotation.binding.FindStringArray;
+import com.nick.scalpel.annotation.binding.FindView;
+import com.nick.scalpel.annotation.binding.OnClick;
+import com.nick.scalpel.annotation.binding.OnTouch;
+import com.nick.scalpel.annotation.binding.RegisterReceiver;
+import com.nick.scalpel.annotation.hook.RequireRoot;
+import com.nick.scalpel.annotation.opt.AutoRecycle;
+import com.nick.scalpel.annotation.opt.RetrieveBean;
+import com.nick.scalpel.annotation.request.RequestFullScreen;
+import com.nick.scalpel.annotation.request.RequirePermission;
+import com.nick.scalpel.core.hook.Shell;
 import com.nick.scalpel.core.opt.RecyclerManager;
-import com.nick.scalpel.core.os.AutoRequireRoot;
-import com.nick.scalpel.core.os.Shell;
-import com.nick.scalpel.core.request.AutoRequestFullScreen;
-import com.nick.scalpel.core.request.AutoRequirePermission;
 
 import java.util.Arrays;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-@AutoRequestFullScreen(viewToTriggerRestore = R.id.hello)
-@AutoRequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE,
+@RequestFullScreen(viewToTriggerRestore = R.id.hello)
+@RequirePermission(requestCode = 100, permissions = {android.Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.CALL_PHONE})
-@AutoRequireRoot(mode = AutoRequireRoot.Mode.Async, callback = "this")
-public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callback, AutoRequireRoot.Callback {
+@RequireRoot(mode = RequireRoot.Mode.Async, callback = "this")
+public class MainActivity extends ScalpelAutoActivity implements BindService.Callback, RequireRoot.Callback {
 
-    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.VIEW)
+    @FindView(id = R.id.toolbar)
     Toolbar toolbar;
 
-    @AutoFound(id = R.id.fab)
+    @FindView(id = R.id.fab)
     @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
-    @AutoFound(id = R.id.hello)
+    @FindView(id = R.id.hello)
     @OnClick(listener = "mokeListener")
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.INTEGER)
+    @FindInt(id = R.integer.size)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.COLOR)
+    @FindColor(id = R.color.colorAccent)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.STRING)
+    @FindString(id = R.string.app_name)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.BOOL)
+    @FindBool(id = R.bool.boo)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = AutoFound.Type.STRING_ARRAY)
+    @FindStringArray(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.INT_ARRAY)
+    @FindIntArray(id = R.array.ints)
     int[] ints;
 
-    @AutoFound
+    @AutoWired
     PowerManager pm;
 
-    @AutoFound
+    @AutoWired
     TelephonyManager tm;
 
-    @AutoFound
+    @AutoWired
     NotificationManager nm;
 
-    @AutoFound
+    @AutoWired
     AccountManager accountManager;
 
-    @AutoFound
+    @AutoWired
     ActivityManager am;
 
-    @AutoFound
+    @AutoWired
     AlarmManager alarmManager;
 
-    @AutoBind(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
             , autoUnbind = true)
     IMyAidlInterface mService;
 
-    @AutoRegister(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+    @RegisterReceiver(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
             , autoUnRegister = true)
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -125,27 +134,30 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         }
     };
 
-    @AutoFound(id = R.drawable.bitmap)
+    @FindBitmap(idRes = R.drawable.bitmap)
     @AutoRecycle
     Bitmap bitmap;
 
     @Custom
     Object custom;
 
-    @Bean
+    @RetrieveBean
     EmptyConObject emptyConObject;
 
-    @Bean
+    @RetrieveBean
     ContextConsObject contextConsObject;
 
-    @Bean
+    @RetrieveBean
     ContextConsObject contextConsObject2;
 
-    @Bean(id = R.id.context_obj)
+    @RetrieveBean(id = R.id.context_obj)
     ContextConsObject contextConsObjectStrict;
 
-    @Bean
+    @RetrieveBean
     RecyclerManager mRecyclerManager;
+
+    @AutoWired
+    StorageManager sManager;
 
     private View.OnClickListener mokeListener = new View.OnClickListener() {
         @Override
@@ -164,7 +176,7 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         }
     };
 
-    private AutoBind.Callback mCallback = new AutoBind.Callback() {
+    private BindService.Callback mCallback = new BindService.Callback() {
         @Override
         public void onServiceBound(ComponentName name, ServiceConnection connection, Intent intent) {
             Log.d("Scalpel.Demo", "onServiceBound, service = " + mService);
@@ -192,6 +204,8 @@ public class MainActivity extends ScalpelAutoActivity implements AutoBind.Callba
         log(toolbar, fab, hello, size, color, text, bool, strs, ints, am, pm, tm, nm, accountManager, alarmManager);
 
         log(emptyConObject, contextConsObject, contextConsObject2, contextConsObjectStrict);
+
+
     }
 
     void log(Object... os) {

@@ -20,7 +20,7 @@ import com.nick.scalpel.Scalpel;
 
 /**
  * Config class for Scalpel, use a {@link com.nick.scalpel.config.Configuration.Builder}
- * to build your configuration, and set to Scalpel before calling {@link Scalpel#getDefault()} by
+ * to build your configuration, and set to Scalpel before calling {@link Scalpel#getInstance()} by
  * calling {@link Scalpel#config(Configuration)}.
  */
 public class Configuration {

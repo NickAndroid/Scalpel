@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.nick.scalpel.annotation.binding.OnTouch;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsFieldWirer;
 import com.nick.scalpel.core.utils.ReflectionUtils;
@@ -35,11 +36,11 @@ import java.util.Arrays;
 
 public class OnTouchWirer extends AbsFieldWirer {
 
-    private AutoFoundWirer mAutoFoundWirer;
+    private ViewFinder mAutoFinder;
 
-    public OnTouchWirer(AutoFoundWirer wirer, Configuration configuration) {
+    public OnTouchWirer(Configuration configuration) {
         super(configuration);
-        this.mAutoFoundWirer = wirer;
+        this.mAutoFinder = new ViewFinder(configuration);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, activity);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(activity, field);
+            mAutoFinder.wire(activity, field);
         }
         autoWire(activity, field);
     }
@@ -64,7 +65,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, fragment);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(fragment, field);
+            mAutoFinder.wire(fragment, field);
         }
         autoWire(fragment, field);
     }
@@ -75,7 +76,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, service);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(service, field);
+            mAutoFinder.wire(service, field);
         }
         autoWire(service, field);
     }
@@ -86,7 +87,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, object);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(context, object, field);
+            mAutoFinder.wire(context, object, field);
         }
         autoWire(object, field);
     }
@@ -159,7 +160,7 @@ public class OnTouchWirer extends AbsFieldWirer {
 
         Object fieldObject = ReflectionUtils.getField(field, object);
         if (fieldObject == null) {
-            mAutoFoundWirer.wire(root, object, field);
+            mAutoFinder.wire(root, object, field);
         }
 
         autoWire(object, field);

@@ -20,8 +20,13 @@ import android.accounts.AccountManager;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.storage.StorageManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,56 +39,108 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nick.scalpel.ScalpelAutoFragment;
-import com.nick.scalpel.core.binding.AutoFound;
-import com.nick.scalpel.core.binding.OnClick;
+import com.nick.scalpel.annotation.binding.AutoWired;
+import com.nick.scalpel.annotation.binding.BindService;
+import com.nick.scalpel.annotation.binding.FindBitmap;
+import com.nick.scalpel.annotation.binding.FindBool;
+import com.nick.scalpel.annotation.binding.FindColor;
+import com.nick.scalpel.annotation.binding.FindInt;
+import com.nick.scalpel.annotation.binding.FindIntArray;
+import com.nick.scalpel.annotation.binding.FindString;
+import com.nick.scalpel.annotation.binding.FindStringArray;
+import com.nick.scalpel.annotation.binding.FindView;
+import com.nick.scalpel.annotation.binding.OnClick;
+import com.nick.scalpel.annotation.binding.OnTouch;
+import com.nick.scalpel.annotation.binding.RegisterReceiver;
+import com.nick.scalpel.annotation.opt.AutoRecycle;
+import com.nick.scalpel.annotation.opt.RetrieveBean;
+import com.nick.scalpel.core.opt.RecyclerManager;
 
 public class MyFragment extends ScalpelAutoFragment {
 
-    @AutoFound(id = R.id.toolbar, type = AutoFound.Type.VIEW)
+    @FindView(id = R.id.toolbar)
     Toolbar toolbar;
 
-    @AutoFound(id = R.id.fab)
-    @OnClick(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
+    @FindView(id = R.id.fab)
+    @OnTouch(action = "showSnack", args = {"Hello, I am a fab!", "Nick"})
     FloatingActionButton fab;
 
-    @AutoFound(id = R.id.hello)
+    @FindView(id = R.id.hello)
+    @OnClick(listener = "mokeListener")
     TextView hello;
 
-    @AutoFound(id = R.integer.size, type = AutoFound.Type.INTEGER)
+    @FindInt(id = R.integer.size)
     int size;
 
-    @AutoFound(id = R.color.colorAccent, type = AutoFound.Type.COLOR)
+    @FindColor(id = R.color.colorAccent)
     int color;
 
-    @AutoFound(id = R.string.app_name, type = AutoFound.Type.STRING)
+    @FindString(id = R.string.app_name)
     String text;
 
-    @AutoFound(id = R.bool.boo, type = AutoFound.Type.BOOL)
+    @FindBool(id = R.bool.boo)
     boolean bool;
 
-    @AutoFound(id = R.array.strs, type = AutoFound.Type.STRING_ARRAY)
+    @FindStringArray(id = R.array.strs)
     String[] strs;
 
-    @AutoFound(id = R.array.ints, type = AutoFound.Type.INT_ARRAY)
+    @FindIntArray(id = R.array.ints)
     int[] ints;
 
-    @AutoFound
+    @AutoWired
     PowerManager pm;
 
-    @AutoFound
+    @AutoWired
     TelephonyManager tm;
 
-    @AutoFound
+    @AutoWired
     NotificationManager nm;
 
-    @AutoFound
+    @AutoWired
     AccountManager accountManager;
 
-    @AutoFound
+    @AutoWired
     ActivityManager am;
 
-    @AutoFound
+    @AutoWired
     AlarmManager alarmManager;
+
+    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
+            , autoUnbind = false)
+    IMyAidlInterface mService;
+
+    @RegisterReceiver(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
+            , autoUnRegister = false)
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Scalpel.Demo", "onReceive, intent = " + intent.getAction());
+        }
+    };
+
+    @FindBitmap(idRes = R.drawable.bitmap)
+    Bitmap bitmap;
+
+    @Custom
+    Object custom;
+
+    @RetrieveBean
+    EmptyConObject emptyConObject;
+
+    @RetrieveBean
+    ContextConsObject contextConsObject;
+
+    @RetrieveBean
+    ContextConsObject contextConsObject2;
+
+    @RetrieveBean(id = R.id.context_obj)
+    ContextConsObject contextConsObjectStrict;
+
+    @RetrieveBean
+    RecyclerManager mRecyclerManager;
+
+    @AutoWired
+    StorageManager sManager;
 
     @Nullable
     @Override

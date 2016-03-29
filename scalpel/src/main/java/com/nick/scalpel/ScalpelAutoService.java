@@ -25,6 +25,6 @@ public abstract class ScalpelAutoService extends Service {
     @CallSuper
     public void onCreate() {
         super.onCreate();
-        Scalpel.getDefault().wire(this);
+        Scalpel.getInstance().wire(this);
     }
 }
