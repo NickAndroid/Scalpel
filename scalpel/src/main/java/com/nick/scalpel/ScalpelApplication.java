@@ -55,6 +55,7 @@ public class ScalpelApplication extends Application {
         public void wire(Object o) {
             if (o instanceof ScalpelApplication) {
                 ContextConfiguration contextConfiguration = o.getClass().getAnnotation(ContextConfiguration.class);
+                if (contextConfiguration == null) return;
                 ((ScalpelApplication) o).mContextConfigurationRes = (contextConfiguration.xmlRes());
                 Log.d(getClass().getSimpleName(), "Bring up app with context config res:" + contextConfiguration.xmlRes());
             }
