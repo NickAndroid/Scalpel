@@ -1,1 +1,1 @@
-./gradlew bintrayUpload --info
+./gradlew bintrayUpload --info --stacktrace

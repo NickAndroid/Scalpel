@@ -59,7 +59,7 @@ public class Shell {
             process.waitFor();
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "su root - the device is not rooted, error message： " + e.getMessage());
+            Log.e(TAG, "su root - the device is not rooted, error message:" + e.getMessage());
             return false;
         } finally {
             try {
