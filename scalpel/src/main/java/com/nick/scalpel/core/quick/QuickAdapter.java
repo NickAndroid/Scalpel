@@ -18,24 +18,24 @@ import com.nick.scalpel.core.utils.Preconditions;
  */
 public class QuickAdapter extends BaseAdapter {
 
-    private DataProvider mDataProvider;
-    private ViewProvider mViewProvider;
+    private ListViewDataProvider mListViewDataProvider;
+    private ListViewViewProvider mListViewViewProvider;
     private Context mContext;
 
-    public QuickAdapter(DataProvider dataProvider, ViewProvider viewProvider, Context context) {
-        this.mDataProvider = Preconditions.checkNotNull(dataProvider);
-        this.mViewProvider = viewProvider;
+    public QuickAdapter(ListViewDataProvider ListViewDataProvider, ListViewViewProvider listViewViewProvider, Context context) {
+        this.mListViewDataProvider = Preconditions.checkNotNull(ListViewDataProvider);
+        this.mListViewViewProvider = listViewViewProvider;
         this.mContext = context;
     }
 
     @Override
     public int getCount() {
-        return mDataProvider == null ? 0 : (mDataProvider.getDataCallback().getData()).size();
+        return mListViewDataProvider == null ? 0 : (mListViewDataProvider.getDataCallback().getData()).size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mDataProvider == null ? null : (mDataProvider.getDataCallback().getData()).get(position);
+        return mListViewDataProvider == null ? null : (mListViewDataProvider.getDataCallback().getData()).get(position);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class QuickAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            View createdView = LayoutInflater.from(mContext).inflate(mViewProvider.getItemViewId(), parent, false);
+            View createdView = LayoutInflater.from(mContext).inflate(mListViewViewProvider.getItemViewId(), parent, false);
             holder = new ViewHolder(createdView, position);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -63,19 +63,19 @@ public class QuickAdapter extends BaseAdapter {
     View bindView(ViewHolder holder) {
         int position = holder.position;
 
-        DataProvider.TextCallback textCallback = mDataProvider.getTextCallback();
+        ListViewDataProvider.TextCallback textCallback = mListViewDataProvider.getTextCallback();
         String text = null;
         if (textCallback == null) {
-            DataProvider.DataCallback dataCallback = mDataProvider.getDataCallback();
+            ListViewDataProvider.DataCallback dataCallback = mListViewDataProvider.getDataCallback();
             if (dataCallback != null)
-                text = String.valueOf(mDataProvider.getDataCallback().getData().get(position));
+                text = String.valueOf(mListViewDataProvider.getDataCallback().getData().get(position));
         } else {
             text = String.valueOf(textCallback.onRequestText(position));
         }
 
         holder.setText(text);
 
-        DataProvider.ImageCallback imageCallback = mDataProvider.getImageCallback();
+        ListViewDataProvider.ImageCallback imageCallback = mListViewDataProvider.getImageCallback();
         if (imageCallback == null) {
             holder.hideImage();
         } else {

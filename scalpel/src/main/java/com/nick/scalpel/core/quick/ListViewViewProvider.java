@@ -3,11 +3,11 @@ package com.nick.scalpel.core.quick;
 /**
  * Created by guohao4 on 2016/6/17.
  */
-public class ViewProvider {
+public class ListViewViewProvider {
 
     private int itemViewId;
 
-    public ViewProvider(int itemViewId) {
+    public ListViewViewProvider(int itemViewId) {
         this.itemViewId = itemViewId;
     }
 

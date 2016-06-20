@@ -27,4 +27,9 @@
         app:clz="com.nick.scalpel.core.opt.CollectionRecycler"
         app:identify="@+id/collection_recycler"
         app:nickname="collection_recycler" />
+
+    <Bean
+        app:clz="com.nick.scalpel.core.quick.ListViewHelper"
+        app:identify="@+id/listview_helper"
+        app:nickname="listview_helper" />
 </Beans>

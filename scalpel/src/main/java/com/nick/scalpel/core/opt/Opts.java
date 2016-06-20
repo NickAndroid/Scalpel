@@ -35,7 +35,8 @@ public class Opts implements Publishable {
     public void publish(Scalpel scalpel) {
         Configuration configuration = scalpel.getConfiguration();
         new AutoRecycleWirer(configuration, scalpel.getLifeCycleManager()).publish(scalpel);
-        new BeanFactory(scalpel.getApp(), configuration,
-                R.xml.context_scalpel_internal, configuration.getBeanContextRes()).publish(scalpel);
+        BeanFactory.init(scalpel.getApp(), configuration,
+                R.xml.context_scalpel_internal, configuration.getBeanContextRes());
+        BeanFactory.getInstance().publish(scalpel);
     }
 }

@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -27,6 +28,7 @@ import com.nick.scalpel.annotation.opt.InterfaceIgnore;
 import com.nick.scalpel.annotation.opt.RetrieveBean;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsFieldWirer;
+import com.nick.scalpel.core.utils.Preconditions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -39,19 +41,28 @@ import static com.nick.scalpel.core.utils.ReflectionUtils.getField;
 import static com.nick.scalpel.core.utils.ReflectionUtils.makeAccessible;
 import static com.nick.scalpel.core.utils.ReflectionUtils.setField;
 
-class BeanFactory extends AbsFieldWirer implements Recyclable {
+public class BeanFactory extends AbsFieldWirer implements Recyclable {
 
     private Context mContext;
 
     private final Map<BeanItem, Object> mBeanMap;
 
-    public BeanFactory(Context context, Configuration configuration, int... xmlRes) {
+    private static BeanFactory sFactory;
+
+    public static synchronized BeanFactory getInstance() {
+        return Preconditions.checkNotNull(sFactory, "BeanFactory NOT init!");
+    }
+
+    public static void init(Context context, Configuration configuration, int... xmlRes) {
+        sFactory = new BeanFactory(context, configuration, xmlRes);
+    }
+
+    private BeanFactory(Context context, Configuration configuration, int... xmlRes) {
         super(configuration);
         this.mContext = context;
         this.mBeanMap = new HashMap<>();
         for (int res : xmlRes) {
-            if (res > 0)
-                readPrebuilt(context, res);
+            if (res > 0) readPrebuilt(context, res);
         }
     }
 
@@ -171,7 +182,6 @@ class BeanFactory extends AbsFieldWirer implements Recyclable {
         }
     }
 
-
     private Object createBeanAndCache(Class clz) {
         Object created = createBean(clz.getName());
         if (created != null) {
@@ -229,6 +239,25 @@ class BeanFactory extends AbsFieldWirer implements Recyclable {
             }
         }
         logE("Failed to create bean for:" + clzName);
+        return null;
+    }
+
+    public Object getBeanById(int id) {
+        synchronized (mBeanMap) {
+            for (BeanItem item : mBeanMap.keySet()) {
+                if (item.id == id) return mBeanMap.get(item);
+            }
+        }
+        return null;
+    }
+
+    public Object getBeanByName(String name) {
+        Preconditions.checkState(!TextUtils.isEmpty(name), "Invalid name:" + name);
+        synchronized (mBeanMap) {
+            for (BeanItem item : mBeanMap.keySet()) {
+                if (name.equalsIgnoreCase(item.name)) return mBeanMap.get(item);
+            }
+        }
         return null;
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by guohao4 on 2016/6/17.
  */
-public interface DataProvider {
+public interface ListViewDataProvider {
 
     interface ImageCallback<T> {
         T onRequestImage(int position);
@@ -42,5 +42,5 @@ public interface DataProvider {
     DataCallback getDataCallback();
 
     @Nullable
-    TextCallback getTextCallback() ;
+    TextCallback getTextCallback();
 }

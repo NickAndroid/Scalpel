@@ -33,7 +33,7 @@ public class Bindings implements Publishable {
     @Override
     public void publish(Scalpel scalpel) {
         Configuration configuration = scalpel.getConfiguration();
-        new ViewFinder(configuration).publish(scalpel);
+        new ExtendedViewFinder(configuration).publish(scalpel);
         new BitmapFinder(configuration).publish(scalpel);
         new IntFinder(configuration).publish(scalpel);
         new IntArrayFinder(configuration).publish(scalpel);

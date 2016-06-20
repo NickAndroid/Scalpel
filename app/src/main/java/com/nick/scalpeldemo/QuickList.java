@@ -1,7 +1,5 @@
 package com.nick.scalpeldemo;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,9 +7,11 @@ import android.widget.ListView;
 
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.annotation.binding.FindView;
-import com.nick.scalpel.core.quick.DataProvider;
+import com.nick.scalpel.annotation.quick.DataProvider;
+import com.nick.scalpel.annotation.quick.ViewProvider;
+import com.nick.scalpel.core.quick.ListViewDataProvider;
 import com.nick.scalpel.core.quick.QuickAdapter;
-import com.nick.scalpel.core.quick.ViewProvider;
+import com.nick.scalpel.core.quick.ListViewViewProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,11 @@ import java.util.List;
 public class QuickList extends ScalpelAutoActivity {
 
     @FindView(id=R.id.listView)
-    @com.nick.scalpel.annotation.quick.DataProvider(name = "mDataProvider")
-    @com.nick.scalpel.annotation.quick.ViewProvider(id=R.layout.item_view)
+    @DataProvider(name = "mListViewDataProvider")
+    @ViewProvider(id=R.layout.item_view)
     ListView listView;
 
-    DataProvider mDataProvider = new DataProvider() {
+    ListViewDataProvider mListViewDataProvider = new ListViewDataProvider() {
 
         @Nullable
         @Override
@@ -62,7 +62,7 @@ public class QuickList extends ScalpelAutoActivity {
 
         final List<String> createData = createData();
 
-        DataProvider dataProvider = new DataProvider() {
+        ListViewDataProvider ListViewDataProvider = new ListViewDataProvider() {
 
             @Nullable
             @Override
@@ -89,9 +89,9 @@ public class QuickList extends ScalpelAutoActivity {
             }
         };
 
-        ViewProvider viewProvider = new ViewProvider(R.layout.item_view);
+        ListViewViewProvider listViewViewProvider = new ListViewViewProvider(R.layout.item_view);
 
-        QuickAdapter adapter = new QuickAdapter(dataProvider, viewProvider, this);
+        QuickAdapter adapter = new QuickAdapter(ListViewDataProvider, listViewViewProvider, this);
 
         listView.setAdapter(adapter);
     }

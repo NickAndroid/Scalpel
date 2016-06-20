@@ -17,5 +17,19 @@
 package com.nick.scalpel.core.opt;
 
 public class BeanNotFoundException extends IllegalArgumentException {
-    // Noop
+
+    public BeanNotFoundException() {
+    }
+
+    public BeanNotFoundException(String detailMessage) {
+        super(detailMessage);
+    }
+
+    public BeanNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public BeanNotFoundException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -59,6 +59,12 @@ class ViewFinder extends AbsFinder {
         FindView findView = field.getAnnotation(FindView.class);
         int id = findView.id();
         if (id <= 0) invalidArg();
-        setField(field, object, root.findViewById(id));
+        View foundView = root.findViewById(id);
+        setField(field, object, foundView);
+        onViewFound(foundView, field);
+    }
+
+    protected void onViewFound(View view, Field field) {
+        // Nothing.
     }
 }
