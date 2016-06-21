@@ -8,12 +8,9 @@ import com.nick.scalpel.core.quick.ViewHelper;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by guohao4 on 2016/6/20.
- */
-public class ExtendedViewFinder extends ViewFinder {
+class ExtendedViewFinder extends ViewFinder {
 
-    public ExtendedViewFinder(Configuration configuration) {
+    ExtendedViewFinder(Configuration configuration) {
         super(configuration);
     }
 

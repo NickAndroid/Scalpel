@@ -8,7 +8,6 @@ import android.widget.ListView;
 import com.nick.scalpel.ScalpelAutoActivity;
 import com.nick.scalpel.annotation.binding.FindView;
 import com.nick.scalpel.annotation.quick.DataProvider;
-import com.nick.scalpel.annotation.quick.ViewProvider;
 import com.nick.scalpel.core.quick.ListViewDataProvider;
 
 import java.util.ArrayList;
@@ -18,6 +17,8 @@ import java.util.List;
  * Created by guohao4 on 2016/6/17.
  */
 public class QuickList extends ScalpelAutoActivity {
+
+    private List<String> mData;
 
     @FindView(id=R.id.listView)
     @DataProvider(name = "mListViewDataProvider")
@@ -39,7 +40,7 @@ public class QuickList extends ScalpelAutoActivity {
                 @NonNull
                 @Override
                 public List getData() {
-                    return createData();
+                    return mData;
                 }
             };
         }
@@ -48,6 +49,11 @@ public class QuickList extends ScalpelAutoActivity {
         @Override
         public TextCallback getTextCallback() {
             return null;
+        }
+
+        @Override
+        public void loadInBackground() {
+            mData = createData();
         }
     };
 
@@ -59,6 +65,11 @@ public class QuickList extends ScalpelAutoActivity {
     }
 
     List<String> createData() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         List<String> out = new ArrayList<String>();
         for (int i =0; i < 1000; i++) {
             out.add("ABCDE.No." + i);

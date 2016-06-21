@@ -14,9 +14,6 @@ import android.widget.TextView;
 import com.nick.scalpel.R;
 import com.nick.scalpel.core.utils.Preconditions;
 
-/**
- * Created by guohao4 on 2016/6/17.
- */
 public class QuickAdapter extends BaseAdapter {
 
     private ListViewDataProvider mListViewDataProvider;

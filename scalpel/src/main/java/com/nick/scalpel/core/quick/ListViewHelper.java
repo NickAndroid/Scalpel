@@ -1,30 +1,33 @@
 package com.nick.scalpel.core.quick;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.widget.ListView;
 
+import com.nick.scalpel.Scalpel;
+import com.nick.scalpel.Scope;
+import com.nick.scalpel.annotation.binding.MainThreadHandler;
 import com.nick.scalpel.annotation.quick.DataProvider;
 import com.nick.scalpel.annotation.quick.ViewProvider;
 import com.nick.scalpel.core.binding.ThisThatNull;
+import com.nick.scalpel.core.opt.SharedExecutor;
 import com.nick.scalpel.core.utils.Preconditions;
 import com.nick.scalpel.core.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by guohao4 on 2016/6/20.
- */
 class ListViewHelper implements ViewHelper<ListView> {
 
-    Context mContext;
+    @MainThreadHandler
+    Handler mHandler;
 
     ListViewHelper(Context context) {
-        this.mContext = context;
+        Scalpel.getInstance().wire(context, this, Scope.Field);
     }
 
     @Override
-    public void doExtendedHelp(ListView view, Field field, Object targetObj) {
+    public void doExtendedHelp(final ListView view, Field field, Object targetObj) {
 
         DataProvider provider = field.getAnnotation(DataProvider.class);
         if (provider == null) return;
@@ -46,7 +49,7 @@ class ListViewHelper implements ViewHelper<ListView> {
         }
 
         Preconditions.checkState(listViewDataProviderObj instanceof ListViewDataProvider);
-        ListViewDataProvider listViewDataProvider = (ListViewDataProvider) listViewDataProviderObj;
+        final ListViewDataProvider listViewDataProvider = (ListViewDataProvider) listViewDataProviderObj;
 
         ListViewViewProvider listViewViewProvider = null;
 
@@ -62,8 +65,20 @@ class ListViewHelper implements ViewHelper<ListView> {
             };
         }
 
-        QuickAdapter quickAdapter = new QuickAdapter(listViewDataProvider,
-                listViewViewProvider, view.getContext());// Using view.context to keep the activity theme.
-        view.setAdapter(quickAdapter);
+        final ListViewViewProvider finalListViewViewProvider = listViewViewProvider;
+        SharedExecutor.get().execute(new Runnable() {
+            @Override
+            public void run() {
+                listViewDataProvider.loadInBackground();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        QuickAdapter quickAdapter = new QuickAdapter(listViewDataProvider,
+                                finalListViewViewProvider, view.getContext());// Using view.context to keep the activity theme.
+                        view.setAdapter(quickAdapter);
+                    }
+                });
+            }
+        });
     }
 }

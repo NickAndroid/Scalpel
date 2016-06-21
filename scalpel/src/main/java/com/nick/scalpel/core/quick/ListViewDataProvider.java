@@ -43,4 +43,6 @@ public interface ListViewDataProvider {
 
     @Nullable
     TextCallback getTextCallback();
+
+    void loadInBackground();
 }
