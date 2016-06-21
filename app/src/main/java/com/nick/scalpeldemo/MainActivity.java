@@ -63,7 +63,6 @@ import com.nick.scalpel.annotation.opt.RetrieveBean;
 import com.nick.scalpel.annotation.request.RequestFullScreen;
 import com.nick.scalpel.annotation.request.RequirePermission;
 import com.nick.scalpel.core.hook.Shell;
-import com.nick.scalpel.core.opt.RecyclerManager;
 
 import java.util.Arrays;
 
@@ -153,9 +152,6 @@ public class MainActivity extends ScalpelAutoActivity implements BindService.Cal
     @RetrieveBean(id = R.id.context_obj)
     ContextConsObject contextConsObjectStrict;
 
-    @RetrieveBean
-    RecyclerManager mRecyclerManager;
-
     @AutoWired
     StorageManager sManager;
 
@@ -235,6 +231,5 @@ public class MainActivity extends ScalpelAutoActivity implements BindService.Cal
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRecyclerManager.recycle(this);
     }
 }

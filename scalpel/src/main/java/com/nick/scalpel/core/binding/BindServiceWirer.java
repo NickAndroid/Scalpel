@@ -82,10 +82,10 @@ class BindServiceWirer extends AbsContextedFinder {
                     break;
                 default:
                     Field callbackField = ReflectionUtils.findField(object, callback);
-                    if (callbackField != null) {
-                        ReflectionUtils.makeAccessible(callbackField);
-                        callbackObject = ReflectionUtils.getField(callbackField, object);
-                    }
+                    Preconditions.checkNotNull(callbackField);
+                    ReflectionUtils.makeAccessible(callbackField);
+                    callbackObject = ReflectionUtils.getField(callbackField, object);
+                    Preconditions.checkNotNull(callbackObject);
             }
             boolean isCallback = callbackObject instanceof BindService.Callback;
             Preconditions.checkState(isCallback, "Field:" + callback + " is not an instance of Callback.");

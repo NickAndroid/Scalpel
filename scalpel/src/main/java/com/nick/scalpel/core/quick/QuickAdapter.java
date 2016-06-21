@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nick.scalpel.R;
 import com.nick.scalpel.core.utils.Preconditions;
 
 /**
@@ -26,6 +27,10 @@ public class QuickAdapter extends BaseAdapter {
         this.mListViewDataProvider = Preconditions.checkNotNull(ListViewDataProvider);
         this.mListViewViewProvider = listViewViewProvider;
         this.mContext = context;
+    }
+
+    public int getItemViewId() {
+        return mListViewViewProvider == null ? R.layout.simple_list_item : mListViewViewProvider.getItemViewId();
     }
 
     @Override
@@ -49,7 +54,7 @@ public class QuickAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            View createdView = LayoutInflater.from(mContext).inflate(mListViewViewProvider.getItemViewId(), parent, false);
+            View createdView = LayoutInflater.from(mContext).inflate(getItemViewId(), parent, false);
             holder = new ViewHolder(createdView, position);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -115,14 +120,17 @@ public class QuickAdapter extends BaseAdapter {
         }
 
         void setImage(Bitmap bitmap) {
+            if (imageView == null) return;
             imageView.setImageBitmap(bitmap);
         }
 
         void setImage(Drawable drawable) {
+            if (imageView == null) return;
             imageView.setImageDrawable(drawable);
         }
 
         void hideImage() {
+            if (imageView == null) return;
             imageView.setVisibility(View.GONE);
         }
 

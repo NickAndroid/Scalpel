@@ -24,7 +24,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.nick.scalpel.annotation.opt.InterfaceIgnore;
 import com.nick.scalpel.annotation.opt.RetrieveBean;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsFieldWirer;
@@ -79,8 +78,7 @@ public class BeanFactory extends AbsFieldWirer implements Recyclable {
                             mBeanMap.put(item, bean);
                             // Find supers
                             // cacheForSuper(bean.getClass(), bean, item);
-                            if (!bean.getClass().isAnnotationPresent(InterfaceIgnore.class))
-                                cacheForInterface(bean.getClass(), bean, item);
+                            cacheForInterface(bean.getClass(), bean, item);
                         }
                     }
                 }

@@ -52,9 +52,7 @@ import com.nick.scalpel.annotation.binding.FindView;
 import com.nick.scalpel.annotation.binding.OnClick;
 import com.nick.scalpel.annotation.binding.OnTouch;
 import com.nick.scalpel.annotation.binding.RegisterReceiver;
-import com.nick.scalpel.annotation.opt.AutoRecycle;
 import com.nick.scalpel.annotation.opt.RetrieveBean;
-import com.nick.scalpel.core.opt.RecyclerManager;
 
 public class MyFragment extends ScalpelAutoFragment {
 
@@ -135,9 +133,6 @@ public class MyFragment extends ScalpelAutoFragment {
 
     @RetrieveBean(id = R.id.context_obj)
     ContextConsObject contextConsObjectStrict;
-
-    @RetrieveBean
-    RecyclerManager mRecyclerManager;
 
     @AutoWired
     StorageManager sManager;

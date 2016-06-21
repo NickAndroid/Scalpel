@@ -51,7 +51,6 @@ import com.nick.scalpel.annotation.binding.FindView;
 import com.nick.scalpel.annotation.binding.OnClick;
 import com.nick.scalpel.annotation.binding.RegisterReceiver;
 import com.nick.scalpel.annotation.opt.RetrieveBean;
-import com.nick.scalpel.core.opt.RecyclerManager;
 
 public class ViewHolder implements Callback{
     @FindView(id = R.id.toolbar)
@@ -127,9 +126,6 @@ public class ViewHolder implements Callback{
 
     @RetrieveBean(id = R.id.context_obj)
     ContextConsObject contextConsObjectStrict;
-
-    @RetrieveBean
-    RecyclerManager mRecyclerManager;
 
     @AutoWired
     StorageManager sManager;

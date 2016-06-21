@@ -17,16 +17,16 @@ public class ExtendedViewFinder extends ViewFinder {
         super(configuration);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void onViewFound(View view, Field field) {
-        super.onViewFound(view, field);
+    protected void onViewFound(View view, Field field, Object targetObj) {
+        super.onViewFound(view, field, targetObj);
         String clzName = view.getClass().getSimpleName();
         ViewHelper helper = (ViewHelper) BeanFactory.getInstance().getBeanByName(clzName + "_helper");
 
-        if (helper != null)
-            //noinspection unchecked
-            helper.doExtendedHelp(view);
-
-        if (debug()) logD("doExtendedHelp end from:" + helper);
+        if (helper != null) {
+            helper.doExtendedHelp(view, field, targetObj);
+            if (debug()) logD("doExtendedHelp end, from:" + helper);
+        }
     }
 }
