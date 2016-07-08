@@ -191,6 +191,8 @@ public class MainActivity extends ScalpelAutoActivity implements BindService.Cal
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
 
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MyFragment()).commitAllowingStateLoss();
+
         hello.setTextSize(size);
         hello.setTextColor(color);
         hello.setText(text + "-" + bool + "-" + Arrays.toString(strs) + "-" + Arrays.toString(ints));

@@ -18,7 +18,9 @@ package com.nick.scalpel;
 
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 /**
  * Auto wired fragment using Scalpel.
@@ -28,8 +30,8 @@ import android.support.v4.app.Fragment;
 public class ScalpelAutoFragment extends Fragment {
     @Override
     @CallSuper
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Scalpel.getInstance().wire(this);
     }
 }

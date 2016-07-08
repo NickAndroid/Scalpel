@@ -49,7 +49,6 @@ import com.nick.scalpel.annotation.binding.FindIntArray;
 import com.nick.scalpel.annotation.binding.FindString;
 import com.nick.scalpel.annotation.binding.FindStringArray;
 import com.nick.scalpel.annotation.binding.FindView;
-import com.nick.scalpel.annotation.binding.OnClick;
 import com.nick.scalpel.annotation.binding.OnTouch;
 import com.nick.scalpel.annotation.binding.RegisterReceiver;
 import com.nick.scalpel.annotation.opt.RetrieveBean;
@@ -64,7 +63,6 @@ public class MyFragment extends ScalpelAutoFragment {
     FloatingActionButton fab;
 
     @FindView(id = R.id.hello)
-    @OnClick(listener = "mokeListener")
     TextView hello;
 
     @FindInt(id = R.integer.size)
@@ -103,8 +101,7 @@ public class MyFragment extends ScalpelAutoFragment {
     @AutoWired
     AlarmManager alarmManager;
 
-    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", callback = "this"
-            , autoUnbind = false)
+    @BindService(action = "com.nick.service", pkg = "com.nick.scalpeldemo", autoUnbind = false)
     IMyAidlInterface mService;
 
     @RegisterReceiver(actions = {Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, "com.nick.service.bind"}
