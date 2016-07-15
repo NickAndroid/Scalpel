@@ -59,13 +59,23 @@ class RequestPermissionWirer extends AbsClassWirer {
         String[] scope = autoRequirePermission.permissions();
         String[] required;
         if (scope.length == 0) {
-            String[] declaredPerms = getPkgInfo(activity).requestedPermissions;
-            required = extractUnGranted(activity, declaredPerms);
+            scope = getPkgInfo(activity).requestedPermissions;
+            required = extractUnGranted(activity, scope);
         } else {
             required = extractUnGranted(activity, scope);
         }
-        if (required == null || required.length == 0) return;
-        activity.requestPermissions(required, code);
+        if (required == null || required.length == 0) {
+            int[] codes = new int[0];
+            if (required != null) {
+                codes = new int[scope.length];
+                for (int i = 0; i < codes.length; i++) {
+                    codes[i] = PackageManager.PERMISSION_GRANTED;
+                }
+            }
+            activity.onRequestPermissionsResult(code, scope, codes);
+        } else {
+            activity.requestPermissions(required, code);
+        }
     }
 
     private String[] extractUnGranted(Activity activity, String[] declaredPerms) {

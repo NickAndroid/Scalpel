@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.storage.StorageManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -228,6 +229,12 @@ public class MainActivity extends ScalpelAutoActivity implements BindService.Cal
     @Override
     public void onRootResult(boolean hasRoot, @Nullable Shell shell) {
         log("onRootResult:" + hasRoot + ", shell = " + shell);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        log("onRequestPermissionsResult:" + requestCode + ", " + Arrays.toString(permissions) + ", " + Arrays.toString(grantResults));
     }
 
     @Override
