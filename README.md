@@ -2,6 +2,7 @@
 Enhanced auto injection framework for Android
 
 ### General Features
+>
 - Auto find views, int, String, bool, array...
 - OnClick listener, action, args.
 - Bind/unbind AIDL service.
@@ -15,11 +16,12 @@ Enhanced auto injection framework for Android
 
 ### Gradle usage
 
-*_latestVersion:*[ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
+*  Latest version
+*  [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
 
 ```
 dependencies {
-    compile 'com.nick.scalpel:scalpel:_latestVersion'
+    compile 'com.nick.scalpel:scalpel:$LatestVersion'
 }
 ```
 
