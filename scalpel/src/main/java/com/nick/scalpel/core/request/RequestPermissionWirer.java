@@ -18,11 +18,13 @@ package com.nick.scalpel.core.request;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.nick.scalpel.annotation.opt.Since;
 import com.nick.scalpel.annotation.request.RequirePermission;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsClassWirer;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TargetApi(value = Build.VERSION_CODES.M)
+@Since("1.0.6")
 class RequestPermissionWirer extends AbsClassWirer {
 
     public RequestPermissionWirer(Configuration configuration) {
@@ -47,11 +50,25 @@ class RequestPermissionWirer extends AbsClassWirer {
     @Override
     public void wire(Object obj) {
 
-        Preconditions.checkState(obj instanceof Activity);
-
-        Activity activity = (Activity) obj;
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+
+        Activity activity = null;
+
+        if (obj instanceof Activity) {
+            activity = (Activity) obj;
+        }
+
+        if (obj instanceof Fragment) {
+            Fragment fragment = (Fragment) obj;
+            activity = fragment.getActivity();
+        }
+
+        if (obj instanceof android.support.v4.app.Fragment) {
+            android.support.v4.app.Fragment fragment = (android.support.v4.app.Fragment) obj;
+            activity = fragment.getActivity();
+        }
+
+        Preconditions.checkNotNull(activity, "Only Activity or Fragment(app/v4) is supported for this annotation.");
 
         RequirePermission autoRequirePermission = activity.getClass().getAnnotation(RequirePermission.class);
         int code = autoRequirePermission.requestCode();
