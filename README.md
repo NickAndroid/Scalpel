@@ -15,8 +15,6 @@ Enhanced auto injection framework for Android
 - Require root.
 
 ### Gradle usage
-
-*  Latest version
 *  [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
 
 ```
