@@ -1,9 +1,6 @@
 # Scalpel
 Enhanced auto injection framework for Android
 
-### Latest version
-[ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
-
 ### General Features
 - Auto find views, int, String, bool, array...
 - OnClick listener, action, args.
@@ -16,9 +13,10 @@ Enhanced auto injection framework for Android
 - Bean support.
 - Require root.
 
-### Usage
+### Gradle usage
 
-Add dependencies
+*_latestVersion:*[ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
+
 ```
 dependencies {
     compile 'com.nick.scalpel:scalpel:_latestVersion'
