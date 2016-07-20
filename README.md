@@ -25,6 +25,21 @@ dependencies {
 }
 ```
 
+### Annotations
+| Finding     | Binding    | Request | Opt
+| --------|---------|-------|-------|
+| @FindView  | @OnClick   | @RequestFullScreen    | @RetrieveBean |
+| @FindBitmap | @OnLongClick | @RequirePermission    | @AutoRecycle |
+| @FindBool | @OnItemClick | @YourCustomRequirement | @ContextConfiguration
+| @FindColor | @OnTouch | | @YourCustomOpt
+| @FindInt | @OnTextChange | |
+| @FindIntArray | @BindService | |
+| @FindString | @RegisteReceiver | |
+| @FindStringArray | @MainThreadHandler | |
+| @YourCustomFinding | @WorkerThreadHandler | |
+| | @AutoWired | |
+| | @YouCustomBinding | | 
+
 ### Samples
 
 *ContextConfiguration support*
