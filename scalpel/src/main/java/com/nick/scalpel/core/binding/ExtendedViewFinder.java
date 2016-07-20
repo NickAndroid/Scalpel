@@ -8,6 +8,7 @@ import com.nick.scalpel.core.quick.ViewHelper;
 
 import java.lang.reflect.Field;
 
+@Deprecated
 class ExtendedViewFinder extends ViewFinder {
 
     ExtendedViewFinder(Configuration configuration) {

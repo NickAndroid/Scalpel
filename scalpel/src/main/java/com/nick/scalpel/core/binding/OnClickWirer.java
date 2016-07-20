@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.nick.scalpel.annotation.binding.OnClick;
+import com.nick.scalpel.annotation.opt.Since;
 import com.nick.scalpel.config.Configuration;
 import com.nick.scalpel.core.AbsFieldWirer;
 import com.nick.scalpel.core.utils.ReflectionUtils;

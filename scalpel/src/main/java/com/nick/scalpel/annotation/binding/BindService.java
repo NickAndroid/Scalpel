@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 
+import com.nick.scalpel.annotation.opt.Since;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -31,6 +33,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD})
 @Retention(RUNTIME)
 @Documented
+@Since("1.0.7")
 public @interface BindService {
 
     String action();

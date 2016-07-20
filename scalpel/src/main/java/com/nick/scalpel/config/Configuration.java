@@ -26,15 +26,13 @@ import com.nick.scalpel.Scalpel;
 public class Configuration {
 
     boolean debug;
-    boolean autoFindIfNull;
     String logTag;
     int beanContextRes;
 
     public static final Configuration DEFAULT = new Configuration();
 
-    private Configuration(boolean debug, boolean autoFindIfNull, String logTag, int beanContextRes) {
+    private Configuration(boolean debug, String logTag, int beanContextRes) {
         this.debug = debug;
-        this.autoFindIfNull = autoFindIfNull;
         this.logTag = logTag;
         this.beanContextRes = beanContextRes;
     }
@@ -45,10 +43,6 @@ public class Configuration {
 
     public boolean isDebug() {
         return debug;
-    }
-
-    public boolean isAutoFindIfNull() {
-        return autoFindIfNull;
     }
 
     public String getLogTag() {
@@ -70,7 +64,6 @@ public class Configuration {
         }
 
         boolean debug;
-        boolean autoFindIfNull;
         String logTag = "Scalpel";
         int beanContextRes = -1;
 
@@ -82,18 +75,6 @@ public class Configuration {
          */
         public Builder debug(boolean debug) {
             this.debug = debug;
-            return this;
-        }
-
-        /**
-         * When a field is null when wiring, and autoFindIfNull is set to true, Scalpel
-         * will try auto find the field.
-         *
-         * @param autoFindIfNull {@code true} if you want to enable auto find mode.
-         * @return The builder instance.
-         */
-        public Builder autoFindIfNull(boolean autoFindIfNull) {
-            this.autoFindIfNull = autoFindIfNull;
             return this;
         }
 
@@ -114,7 +95,7 @@ public class Configuration {
         }
 
         public Configuration build() {
-            return new Configuration(debug, autoFindIfNull, logTag, beanContextRes);
+            return new Configuration(debug, logTag, beanContextRes);
         }
     }
 }

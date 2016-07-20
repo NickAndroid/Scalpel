@@ -37,7 +37,6 @@ public class ScalpelApplication extends Application {
         new ContextConfigurationProcessor().wire(this);
         Scalpel scalpel = Scalpel.create(this)
                 .config(Configuration.builder()
-                        .autoFindIfNull(true)
                         .debug(true)
                         .beanContextRes(mContextConfigurationRes)
                         .logTag(getClass().getSimpleName())
