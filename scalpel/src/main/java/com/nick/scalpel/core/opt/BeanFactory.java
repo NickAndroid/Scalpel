@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.nick.scalpel.core.utils.ReflectionUtils.getField;
 import static com.nick.scalpel.core.utils.ReflectionUtils.makeAccessible;
@@ -151,6 +152,12 @@ public class BeanFactory extends AbsFieldWirer implements Recyclable {
         RetrieveBean retrieveBean = field.getAnnotation(RetrieveBean.class);
         boolean singleton = retrieveBean.singleton();
         int id = retrieveBean.id();
+
+        if (id > 0) {
+            Object bean = getBeanById(id);
+            setField(field, object, Preconditions.checkNotNull(bean, "No such bean with id:" + id));
+            return;
+        }
 
         Class clz = field.getType();
 
