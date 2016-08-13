@@ -50,9 +50,19 @@ class AutoRecycleWirer extends AbsOptWirer {
             public void onActivityDestroyed(Activity destroyed) {
                 super.onActivityDestroyed(destroyed);
                 if (destroyed == activity) {
-                    logV("Recycle field: " + fieldName);
-                    ReflectionUtils.setField(field, activity, null);
-                    mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
+                    logV("Recycling field: " + fieldName);
+                    Object fieldObj = ReflectionUtils.getField(field, activity);
+                    if (fieldObj == null) return;
+                    try {
+                        if (fieldObj instanceof AutoRecycle.Recyclable) {
+                            ((AutoRecycle.Recyclable) fieldObj).recycle();
+                        }
+                    } catch (Exception ignored) {
+
+                    } finally {
+                        ReflectionUtils.setField(field, activity, null);
+                        mLifeCycleManager.unRegisterActivityLifecycleCallbacks(this);
+                    }
                 }
             }
         });

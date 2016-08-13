@@ -16,6 +16,8 @@
 
 package com.nick.scalpel.annotation.request;
 
+import com.nick.scalpel.annotation.opt.Beta;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -26,6 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE})
 @Retention(RUNTIME)
 @Documented
+@Beta
 public @interface RequestFullScreen {
     boolean keepAppBar() default false;
 

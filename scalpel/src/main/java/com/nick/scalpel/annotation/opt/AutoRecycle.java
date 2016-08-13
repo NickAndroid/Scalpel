@@ -27,4 +27,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Documented
 public @interface AutoRecycle {
+    interface Recyclable {
+        void recycle() throws Exception;
+    }
 }
