@@ -16,6 +16,7 @@ Enhanced auto injection framework for Android
 
 ### Gradle usage
 *  [ ![Download](https://api.bintray.com/packages/nickandroid/maven/scalpel/images/download.svg) ](https://bintray.com/nickandroid/maven/scalpel/_latestVersion)
+*  [![](https://jitpack.io/v/NickAndroid/Scalpel_Android.svg)](https://jitpack.io/#NickAndroid/Scalpel_Android)
 
 ```
 dependencies {
